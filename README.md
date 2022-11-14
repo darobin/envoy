@@ -1,2 +1,3 @@
-# envoy
-Experimenting with user agency
+# Envoy
+
+Experimenting with user agency.
