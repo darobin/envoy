@@ -1,11 +1,28 @@
 
-import { app, BrowserWindow, screen }  from 'electron';
+import { app, protocol, BrowserWindow, screen }  from 'electron';
+import { ipfsProtocolHandler } from './ipfs-handler.js';
 
 let mainWindow;
 
+// I am not clear at all as to what the privileges mean. They are listed at
+// https://www.electronjs.org/docs/latest/api/structures/custom-scheme but that is harldy
+// informative. https://www.electronjs.org/docs/latest/api/protocol#protocolregisterschemesasprivilegedcustomschemes
+// is pretty clear that the behaviour we want requires at least `standard`.
+protocol.registerSchemesAsPrivileged([
+  {scheme: 'ipfs', privileges: {
+    standard: true,
+    secure: false,
+    bypassCSP: false,
+    allowServiceWorkers: false,
+    supportFetchAPI: true,
+    corsEnabled: false,
+    stream: true,
+  } },
+]);
 app.enableSandbox();
 app.whenReady().then(() => {
-  let { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  protocol.registerStreamProtocol('ipfs', ipfsProtocolHandler);
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
     width,
     height,
@@ -19,7 +36,7 @@ app.whenReady().then(() => {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
-  let { webContents } = mainWindow;
+  const { webContents } = mainWindow;
   // reloading
   webContents.on('before-input-event', makeKeyDownMatcher('cmd+R', reload));
   webContents.on('before-input-event', makeKeyDownMatcher('ctrl+R', reload));

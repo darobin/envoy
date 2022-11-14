@@ -6,7 +6,7 @@
   "author": "Robin Berjon <robin@berjon.com>",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently -k \"build-electron -d -c build-electron.config.cjs\" \"wait-on build/.build-electron-done && electron .\"",
+    "start": "concurrently -k \"build-electron -d -c build-electron.config.cjs\" \"wait-on build/.build-electron-done && electron --trace-warnings .\"",
     "build": "build-electron -c build-electron.config.cjs && npm exec electron-builder --mac"
   },
   "bin": {},

@@ -6,8 +6,12 @@ class EnvoyHeader extends LitElement {
     :host {
       display: block;
       background: #000;
+      color: #fff;
       text-align: center;
       padding: 1.5rem 1rem 1rem 1rem;
+    }
+    :host h1 {
+      font-weight: 100;
     }
   `;
 
@@ -17,7 +21,7 @@ class EnvoyHeader extends LitElement {
 
   render () {
     return html`<header>
-      <img src="./img/slic.svg" width="36" height="36">
+      <h1>envoy</h1>
       <slot></slot>
     </header>`;
   }

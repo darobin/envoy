@@ -1,9 +1,5 @@
 
 # Things to do
 
-- [ ] Quick and dirty bundler that turns a dir into a SLIC
-    - [ ] Add --watch support
-- [ ] UI to launch SLICs
-    - [ ] Drop a SLIC in
-    - [ ] Reopen previous SLIC
-    - [ ] Open SLIC window, make it reloadable
+- [x] demonstrate loading from a fake protocol into an `iframe`
+- [ ] create a `BrowserView` that's attached to an element that, apart from that, does nothing
