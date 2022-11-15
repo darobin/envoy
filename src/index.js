@@ -1,7 +1,9 @@
 
-import { app, protocol, BrowserWindow, screen }  from 'electron';
+import { app, protocol, BrowserWindow, BrowserView, screen, ipcMain }  from 'electron';
+import { nanoid } from 'nanoid';
 import { ipfsProtocolHandler } from './ipfs-handler.js';
 
+const liveBV = {};
 let mainWindow;
 
 // I am not clear at all as to what the privileges mean. They are listed at
@@ -32,6 +34,36 @@ app.whenReady().then(() => {
     titleBarStyle: 'hidden',
     icon: './img/icon.png',
   });
+  ipcMain.handle('card:create', async (ev) => {
+    const win = ev2win(ev);
+    const bv = new BrowserView();
+    win.addBrowserView(bv);
+    const id = nanoid();
+    liveBV[id] = bv;
+    return id;
+  });
+  ipcMain.handle('card:destroy', async (ev, id) => {
+    const win = ev2win(ev);
+    const bv = liveBV[id];
+    if (!bv) return false;
+    delete liveBV[id];
+    win.removeBrowserView(bv);
+    return true;
+  });
+  ipcMain.handle('card:load', async (ev, id, src) => {
+    const bv = liveBV[id];
+    if (!bv) return;
+    bv.webContents.loadURL(src);
+  });
+  ipcMain.handle('card:resize', async (ev, id, width, height) => {
+    const bv = liveBV[id];
+    if (!bv) return;
+    const { x, y } = bv.getBounds();
+    bv.setBounds({ x, y, width, height });
+  });
+  // move: (id, x, y) => ipcRenderer.send('card-move', id, x, y),
+  // resize: (id, w, h) => ipcRenderer.send('card-resize', id, w, h),
+
   mainWindow.loadFile('index.html');
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
@@ -87,4 +119,8 @@ function makeKeyMatcher (type, sc, cb) {
     if (badMod) return;
     cb();
   };
+}
+
+function ev2win (ev) {
+  return BrowserWindow.fromWebContents(ev.sender);
 }

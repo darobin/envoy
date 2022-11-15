@@ -17,4 +17,4 @@ class EnvoyHeader extends LitElement {
     </div>`;
   }
 }
-customElements.define('envoy-header', EnvoyHeader);
+customElements.define('envoy-main', EnvoyHeader);
