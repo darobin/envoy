@@ -2,7 +2,7 @@
 # Things to do
 
 - [x] demonstrate loading from a fake protocol into an `iframe`
-- [ ] create a `BrowserView` that's attached to an element that can load from `ipfs`
+- [x] create a `BrowserView` that's attached to an element that can load from `ipfs`
 - [ ] set up js-ipfs and integrate it such that it works
 - [ ] outside of the app (in scratch code)
     - [ ] publish a few small entries as their own blocks (CAR?)
@@ -18,6 +18,20 @@
         - [ ] a simple HTML+file variant
         - [ ] update IPLD list, including pagination
         - [ ] IPNS updating
+
+## `BrowserView` woes
+
+Using `webview` isn't great but attaching `BrowserView` to an element is extremely painful at best,
+if it can even be made to work reliably without a big pile of hacks.
+
+Instead, we could have a dual mode:
+* `entry-card` when in embedded mode renders a summary of sorts
+* and when in full mode it runs as the full thing
+
+The downside is that this doesn't really give us composability.
+
+
+## Later
 
 - [ ] Compare with IPP and Dave's thing
 

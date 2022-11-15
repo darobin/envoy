@@ -42,7 +42,6 @@
   },
   "dependencies": {
     "electron": "^21.2.3",
-    "ipfs-core": "^0.17.0",
-    "nanoid": "^4.0.0"
+    "ipfs-core": "^0.17.0"
   }
 }

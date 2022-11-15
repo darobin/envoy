@@ -10,6 +10,7 @@ import './db/router.js';
 // elements
 import './el/envoy/404.js';
 import './el/envoy/header.js';
+import './el/envoy/card.js';
 // import './el/envoy/main.js';
 // import './el/envoy/root-route.js';
 // import './el/envoy/button.js';

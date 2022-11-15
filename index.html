@@ -3,14 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src ipfs:; img-src ipfs:">
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' ipfs:; style-src 'self' 'unsafe-inline' ipfs:"> -->
   <title>Envoy</title>
   <link rel="stylesheet" href="./client/envoy.css">
 </head>
   <body>
     <envoy-header></envoy-header>
-    <iframe src="ipfs://deadb33f/" width="800" height="300" frameborder="0"></iframe>
-    <img src="ipfs://c0edbabe/img.png" alt="loading…">
+    <iframe src="ipfs://deadb33f/" width="800" height="300" frameborder="0"></iframe><br>
+    <img src="ipfs://c0edbabe/img.png" alt="loading…"><br>
+    <div style="width: 100px; height: 300px">
+      <envoy-card src="ipfs://deadb33f/green"></envoy-card>
+    </div>
+    <div style="width: 300px; height: 100px">
+      <envoy-card src="ipfs://deadb33f/darkorange"></envoy-card>
+    </div>
     <!-- <envoy-root-route></envoy-root-route> -->
     <script type="module" src="./client/envoy.js"></script>
   </body>

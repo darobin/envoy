@@ -19,12 +19,10 @@ export function ipfsProtocolHandler (req, cb) {
       data: createReadStream('/Users/robin/Code/etsaur.png'),
     });
   }
+  let background = /ipfs:\/\/deadb33f\/\w+/.test(req.url) ? req.url.replace('ipfs://deadb33f/', '') : 'red'
   cb({
     statusCode: 200,
     mimeType: 'text/html',
-    headers: {
-      // 'content-type': 'text/html',
-    },
     data: createStream(`<!DOCTYPE html>
 <html>
 <head>
@@ -35,7 +33,7 @@ export function ipfsProtocolHandler (req, cb) {
     body {
       margin: 0;
       padding: 0;
-      background: red;
+      background: ${background};
     }
   </style>
 </head>

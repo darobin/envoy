@@ -1,61 +1,36 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
 
+
+// webviewTag boolean (optional) - Whether to enable the <webview> tag. Defaults to false. Note: The preload script
+// configured for the <webview> will have node integration enabled when it is executed so you should ensure
+// remote/untrusted content is not able to create a <webview> tag with a possibly malicious preload script. You can
+// use the will-attach-webview event on webContents to strip away the preload script and to validate or alter the
+// <webview>'s initial settings.
 class EnvoyCard extends LitElement {
   static styles = css`
     :host {
       display: block;
+      width: 100%;
+      height: 100%;
+    }
+    div, webview {
+      display: flex;
+      width: 100%;
+      height: 100%;
     }
   `;
 
   static properties = {
-    src: {
-      type: URL,
-      converter: {
-        fromAttribute: (value) => new URL(value),
-        toAttribute: (value) => value.toString(),
-      },
-    },
+    src: { type: String },
   };
 
   constructor () {
     super();
-    this._cardID = null;
-    this._ro = new ResizeObserver((entries) => {
-      if (!this._cardID) return;
-      const { blockSize: w, inlineSize: h } = entries[entries.length - 1].contentBoxSize[0];
-      window.envoyCard.resize(this._cardID, w, h);
-    });
-  }
-
-  async connectedCallback () {
-    super.connectedCallback();
-    this._cardID = await window.envoyCard.create();
-    this._ro.observe(this);
-  }
-
-  async disconnectedCallback () {
-    super.disconnectedCallback();
-    this._ro.unobserve(this);
-    await window.envoyCard.destroy(this._cardID);
-    this._cardID = null;
-  }
-
-  async firstUpdated () {
-    // set up move and resize here, including setting initial size
-    const { x, y, width, height } = this.getBoundingClientRect();
-    await window.envoyCard.resize(this._cardID, width, height);
-    await window.envoyCard.move(this._cardID, x, y);
-  }
-
-  async updated (changed) {
-    if (changed.has('src')) {
-      await window.envoyCard.load(this._cardID, this.src);
-    }
   }
 
   render () {
-    return html`<div></div>`;
+    return html`<div><webview src=${this.src}></webview></div>`;
   }
 }
 customElements.define('envoy-card', EnvoyCard);
