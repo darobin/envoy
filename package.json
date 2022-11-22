@@ -1,5 +1,5 @@
 {
-  "name": "envoy",
+  "name": "envoyage",
   "xtype": "module",
   "version": "0.0.1",
   "description": "Experimenting with user agency",
@@ -13,7 +13,7 @@
   "main": "build/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/darobin/envoy.git"
+    "url": "https://github.com/darobin/envoyage.git"
   },
   "build": {
     "files": [

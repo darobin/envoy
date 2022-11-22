@@ -1,7 +1,7 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
 
-class Envoy404 extends LitElement {
+class Envoyage404 extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -19,4 +19,4 @@ class Envoy404 extends LitElement {
     return html`<p>Not all those who wander are lost, but it looks like <em>you</em> are.</p>`;
   }
 }
-customElements.define('envoy-404', Envoy404);
+customElements.define('nv-404', Envoyage404);

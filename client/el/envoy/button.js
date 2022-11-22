@@ -1,7 +1,7 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
 
-class EnvoyButton extends LitElement {
+class EnvoyageButton extends LitElement {
  static styles = css`
     :host {
       display: block;
@@ -44,4 +44,4 @@ class EnvoyButton extends LitElement {
     `;
   }
 }
-customElements.define('envoy-button', EnvoyButton);
+customElements.define('nv-button', EnvoyageButton);

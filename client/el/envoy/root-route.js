@@ -2,7 +2,7 @@
 import { LitElement, css, html } from '../../../deps/lit.js';
 import { getStore, get } from '../../db/model.js';
 
-class EnvoyRootRoute extends LitElement {
+class EnvoyageRootRoute extends LitElement {
   static properties = {
     screen: { attribute: false },
     component: { attribute: false },
@@ -17,8 +17,8 @@ class EnvoyRootRoute extends LitElement {
   }
 
   render () {
-    if (this.screen === 'main') return html`<envoy-main></envoy-main>`;
-    return html`<envoy-404></envoy-404>`;
+    if (this.screen === 'main') return html`<nv-main></nv-main>`;
+    return html`<nv-404></nv-404>`;
   }
 }
-customElements.define('envoy-root-route', EnvoyRootRoute);
+customElements.define('nv-root-route', EnvoyageRootRoute);
