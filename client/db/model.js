@@ -1,8 +1,6 @@
-/* eslint eqeqeq: 0, no-self-compare: 0 */
 
-let registry = {}
-  , subscriberQueue = []
-;
+const registry = {};
+const subscriberQueue = [];
 
 export function registerStore (name, store) {
   if (registry[name]) throw new Error(`Store "${name}" already registered.`);

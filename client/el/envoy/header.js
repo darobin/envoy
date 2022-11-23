@@ -10,9 +10,6 @@ class EnvoyageHeader extends LitElement {
       text-align: center;
       padding: 1.5rem 1rem 1rem 1rem;
     }
-    :host h1 {
-      font-weight: 100;
-    }
     text {
       font-family: Lexend, monospace;
       font-size: 40px;

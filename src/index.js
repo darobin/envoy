@@ -1,8 +1,11 @@
 
 import { app, protocol, BrowserWindow, screen }  from 'electron';
 import { ipfsProtocolHandler } from './ipfs-handler.js';
+import { initDataSource } from './data-source.js';
+import makeRel from './rel.js';
 
 let mainWindow;
+const rel = makeRel(import.meta.url);
 
 // I am not clear at all as to what the privileges mean. They are listed at
 // https://www.electronjs.org/docs/latest/api/structures/custom-scheme but that is harldy
@@ -20,8 +23,9 @@ protocol.registerSchemesAsPrivileged([
   } },
 ]);
 app.enableSandbox();
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   protocol.registerStreamProtocol('ipfs', ipfsProtocolHandler);
+  await initDataSource();
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
     width,
@@ -33,6 +37,7 @@ app.whenReady().then(() => {
     icon: './img/icon.png',
     webPreferences: {
       webviewTag: true, // I know that this isn't great, but the alternatives aren't there yet
+      preload: rel('../build/preload.js'),
     },
   });
 

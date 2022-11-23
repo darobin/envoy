@@ -1,19 +1,19 @@
 
 import { registerStore, getStore, derived } from './model.js';
 
-let defaultValue = { screen: undefined }
-  , store = derived(
-      [
-        getStore('user'),
-      ],
-      updateRoute,
-      defaultValue
-    )
+const defaultValue = { screen: undefined };
+const store = derived(
+    [
+      getStore('identities'),
+    ],
+    updateRoute,
+    defaultValue
+  )
 ;
 
 registerStore('router', store);
 
-function updateRoute ([user]) {
-  if (user.state !== 'in') return { screen: 'login' };
-  return { screen: 'news', component: 'home' };
+function updateRoute ([identities]) {
+  if (!identities.people.length ) return { screen: 'create-identity' };
+  return { screen: 'main'/*, component: 'home'*/ };
 }
