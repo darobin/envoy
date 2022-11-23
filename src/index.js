@@ -7,6 +7,21 @@ import makeRel from './rel.js';
 let mainWindow;
 const rel = makeRel(import.meta.url);
 
+// there can be only one
+const singleInstanceLock = app.requestSingleInstanceLock();
+if (!singleInstanceLock) {
+  app.quit();
+}
+else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
+
 // I am not clear at all as to what the privileges mean. They are listed at
 // https://www.electronjs.org/docs/latest/api/structures/custom-scheme but that is harldy
 // informative. https://www.electronjs.org/docs/latest/api/protocol#protocolregisterschemesasprivilegedcustomschemes
