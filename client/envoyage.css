@@ -3,9 +3,15 @@
 
 :root {
   --heading-font: Lexend;
+  --highlight: lightgreen;
+  --error: #ff4500;
 }
 
 html, body {
   margin: 0;
   padding: 0;
+}
+
+* {
+  box-sizing: border-box;
 }

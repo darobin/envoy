@@ -15,6 +15,6 @@ import './el/envoy/main.js';
 import './el/envoy/root-route.js';
 import './el/envoy/create-identity.js';
 import './el/envoy/box.js';
-// import './el/envoy/button.js';
+import './el/envoy/image-drop.js';
 
 await initIdentities();

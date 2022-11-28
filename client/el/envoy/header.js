@@ -27,7 +27,7 @@ class EnvoyageHeader extends LitElement {
     }
     path + path {
       stroke-width: 1.5px;
-      stroke: lightgreen;
+      stroke: var(--highlight);
     }
   `;
 
