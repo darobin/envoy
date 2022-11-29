@@ -63,24 +63,34 @@ class EnvoyageCreateIdentity extends LitElement {
     #did {
       font-family: monospace;
     }
-    .error-list {
+    .error-message {
       color: var(--error);
     }
 `, buttonStyles];
 
   constructor () {
     super();
-    this.bannerFile = null;
-    this.avatarFile = null;
+    this.banner = null;
+    this.avatar = null;
+    this.errMsg = null;
   }
 
-  formHandler (ev) {
+  async formHandler (ev) {
     const fd = new FormData(ev.target);
     const data = {};
     for (let [key, value] of fd.entries()) {
       console.warn(key, value);
       data[key] = value;
     }
+    for (const k of ['avatar', 'banner']) {
+      if (!this[k]) continue;
+      data[k] = {
+        mediaType: this[k].type,
+        buffer: await this[k].arrayBuffer(),
+      };
+    }
+    this.errMsg = await window.envoyage.createIdentity(data);
+    this.requestUpdate();
     ev.preventDefault();
   }
   // XXX
@@ -100,11 +110,11 @@ class EnvoyageCreateIdentity extends LitElement {
   //  - have the form and its handling here, super simple native-based stuff with FormData and submit, none of that crap
   //    with wiring
   render () {
-    const err = this.errors ? html`<ul class="error-list">${this.errors}</ul>` : nothing;
+    const err = this.errMsg ? html`<div class="error-message">${this.errMsg}</div>` : nothing;
     return html`<nv-box title="Create Identity">
       <form @submit=${this.formHandler}>
-        <nv-image-drop id="banner" @image-dropped=${(e) => this.bannerFile = e.detail.imageFile}></nv-image-drop>
-        <nv-image-drop id="avatar" @image-dropped=${(e) => this.avatarFile = e.detail.imageFile}></nv-image-drop>
+        <nv-image-drop id="banner" @image-dropped=${(e) => this.banner = e.detail.imageFile}></nv-image-drop>
+        <nv-image-drop id="avatar" @image-dropped=${(e) => this.avatar = e.detail.imageFile}></nv-image-drop>
         <input type="text" id="name" name="name" placeholder="name" required>
         <div class="form-line">
           <label for="did">DID</label>

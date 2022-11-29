@@ -1,16 +1,20 @@
 
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { mkdir } from "node:fs/promises";
+import { mkdir, access, writeFile } from "node:fs/promises";
 import { ipcMain } from 'electron';
+import mime from 'mime-types';
 import saveJSON from './save-json.js';
 import loadJSON from './load-json.js';
+import { putBlockAndPin, putDagAndPin, dirCryptoKey, publishIPNS } from './ipfs-node.js';
 
 const { handle } = ipcMain;
 const dataDir = join(homedir(), '.envoyage');
+const identitiesDir = join(dataDir, 'identities');
+const didRx = /^did:[\w-]+:\S+/;
 
 export async function initDataSource () {
-  await mkdir(dataDir, { recursive: true });
+  await mkdir(identitiesDir, { recursive: true });
   try {
     await loadIdentities();
   }
@@ -30,16 +34,56 @@ async function loadIdentities () {
   return loadJSON(join(dataDir, 'identities.json'));
 }
 
-// data should be: name, did
-async function createIdentity (evt, { name, did }, bannerFile, imageFile) {
-  //  - check that it's a valid did
-  //  - check that we don't have a dir for that did
-  //  - create did dir
-  //  - store images
-  //  - create properly shaped JSON with image objects and embedded Buffers
-  //  - create key pair for the person and store it
-  //  - put person on IPFS
-  //  - create and store IPNS for the person, with a derived key matching the DID
+async function createIdentity (evt, { name, did, avatar, banner }) {
+  try {
+    if (!name) return 'Missing name.';
+    if (!did || !didRx.test(did)) return 'Invalid or missing DID.';
+    const didDir = join(identitiesDir, encodeURIComponent(did));
+    const keyDir = join(didDir, 'keys');
+    try {
+      await access(didDir);
+      // eventually we'll have to check actual ownership of that DID…
+      return 'DID already exists here.';
+    }
+    catch (err) { /* noop */ }
+    await mkdir(didDir);
+    const person = {
+      $type: 'Person',
+      $id: did,
+      name,
+      feed: 'XXXX',
+    };
+    const applyImage = async (name, source) => {
+      writeFile(join(didDir, `${name}.${mime.extension(source.mediaType)}`), source.buffer);
+      person[name] = {
+        $type: 'Image',
+        mediaType: source.mediaType,
+        src: await putBlockAndPin(source.buffer),
+      };
+    };
+    if (avatar) await applyImage('avatar', avatar);
+    if (banner) await applyImage('banner', banner);
+    await dirCryptoKey(keyDir, did);
+    // we have to ping pong so as to get a two-way IPNS: create a partial feed, get its IPNS, set that on the Person,
+    // create the person, get their IPNS, set that on feed, update feed, republish its IPNS.
+    const feed = {
+      $type: 'Feed',
+      items: [],
+    };
+    const tmpFeedCID = await putDagAndPin(feed);
+    const feedIPNS = await publishIPNS(keyDir, `${did}/root-feed`, tmpFeedCID);
+    person.feed = `ipns://${feedIPNS.name}`;
+    const personCID = await putDagAndPin(person);
+    const personIPNS = await publishIPNS(keyDir, did, personCID);
+    feed.creator = `ipns://${personIPNS.name}`;
+    const feedCID = await putDagAndPin(feed);
+    await publishIPNS(keyDir, `${did}/root-feed`, feedCID);
+    await saveJSON(join(didDir, 'ipns'), { ipns: personIPNS });
+    return '';
+  }
+  catch (err) {
+    return err.message;
+  }
 }
 
 // async function saveIdentity (evt, person) {
