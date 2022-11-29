@@ -1,7 +1,7 @@
 
-import { LitElement, css, html, nothing } from '../../../deps/lit.js';
+import { LitElement, css, html } from '../../../deps/lit.js';
 import { buttonStyles } from './button-styles.js';
-import { getStore } from '../../db/model.js';
+// import { getStore } from '../../db/model.js';
 
 class EnvoyageShowIdentity extends LitElement {
   static styles = [css`

@@ -4,7 +4,7 @@ import './import-env.js'
 
 // state
 import './db/model.js';
-import { initIdentities}  from './db/identities.js';
+import { initIdentities }  from './db/identities.js';
 import './db/router.js';
 
 // elements

@@ -9,19 +9,12 @@ registerStore('identities', store);
 export async function initIdentities () {
   store.set({ state: 'loading', people: [] });
   try {
-    const people = await window.envoyage.loadIdentities();
+    const ipnsList = await window.envoyage.loadIdentities();
+    const resList = await Promise.all(ipnsList.map(({ ipns }) => fetch(ipns, { headers: { Accept: 'application/json' }})));
+    const people = await Promise.all(resList.map(r => r.json()));
     store.set({ state: 'loaded', people });
   }
   catch (err) {
     store.set({ state: 'error', people: [], err });
   }
 }
-
-// export function login (username, password) {
-//   store.set({ state: 'loading' });
-//   setTimeout(() => store.set({ state: 'in', name: 'Robin', cookie: 'xxx' }), 2000);
-// }
-
-// export function logout () {
-//   store.set(defaultValue);
-// }

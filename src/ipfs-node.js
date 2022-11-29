@@ -26,6 +26,11 @@ export async function putDagAndPin (obj) {
   return cid;
 }
 
+export async function getDag (cid, path) {
+  const { value } = await node.dag.get(cid, { path });
+  return value;
+}
+
 export async function dirCryptoKey (keyDir, name) {
   const cleanName = cleanID(name);
   const keyFile = join(keyDir, `${cleanName}.pem`);
@@ -51,4 +56,12 @@ async function provideKey (keyFile, cleanName) {
 export async function publishIPNS (keyDir, name, cid) {
   await dirCryptoKey(keyDir, name);
   return node.name.publish(cid, { key: cleanID(name) });
+}
+
+export async function resolveIPNS (ipns) {
+  const resolved = node.name.resolve(`/ipns/${ipns}`, { recursive: true });
+  // we can an iterable array back
+  let res;
+  for await (const target of resolved) res = target;
+  return res.replace('/ipfs/', '');
 }

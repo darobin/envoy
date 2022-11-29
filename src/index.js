@@ -21,25 +21,27 @@ else {
   });
 }
 
-
 // I am not clear at all as to what the privileges mean. They are listed at
 // https://www.electronjs.org/docs/latest/api/structures/custom-scheme but that is harldy
 // informative. https://www.electronjs.org/docs/latest/api/protocol#protocolregisterschemesasprivilegedcustomschemes
 // is pretty clear that the behaviour we want requires at least `standard`.
+const privileges = {
+  standard: true,
+  secure: false,
+  bypassCSP: false,
+  allowServiceWorkers: false,
+  supportFetchAPI: true,
+  corsEnabled: false,
+  stream: true,
+};
 protocol.registerSchemesAsPrivileged([
-  {scheme: 'ipfs', privileges: {
-    standard: true,
-    secure: false,
-    bypassCSP: false,
-    allowServiceWorkers: false,
-    supportFetchAPI: true,
-    corsEnabled: false,
-    stream: true,
-  } },
+  { scheme: 'ipfs', privileges },
+  { scheme: 'ipns', privileges },
 ]);
 app.enableSandbox();
 app.whenReady().then(async () => {
   protocol.registerStreamProtocol('ipfs', ipfsProtocolHandler);
+  protocol.registerStreamProtocol('ipns', ipfsProtocolHandler);
   await initDataSource();
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({

@@ -2,6 +2,7 @@
 import { LitElement, css, html, nothing } from '../../../deps/lit.js';
 import { buttonStyles } from './button-styles.js';
 import { getStore } from '../../db/model.js';
+import { initIdentities }  from '../../db/identities.js';
 
 class EnvoyageCreateIdentity extends LitElement {
   static styles = [css`
@@ -96,6 +97,7 @@ class EnvoyageCreateIdentity extends LitElement {
     if (this.errMsg) this.requestUpdate();
     else {
       nav.set({ screen: 'show-identity', params: { id: data.did }});
+      await initIdentities();
     }
   }
   // XXX

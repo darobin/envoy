@@ -1,6 +1,10 @@
 
 import { PassThrough } from 'stream';
-import { createReadStream } from 'node:fs';
+// import { createReadStream } from 'node:fs';
+import { Buffer } from 'node:buffer';
+import { WASMagic } from 'wasmagic';
+import { resolveIPNS, getDag } from './ipfs-node.js';
+
 
 // this is so that we can send strings as streams
 function createStream (text) {
@@ -10,38 +14,53 @@ function createStream (text) {
   return rv;
 }
 
-export function ipfsProtocolHandler (req, cb) {
+export async function ipfsProtocolHandler (req, cb) {
   console.log(`got request`, req, cb);
-  if (/png/.test(req.url)) {
+  const url = new URL(req.url);
+  let cid;
+  if (url.protocol === 'ipns:') {
+    cid = await resolveIPNS(url.hostname);
+  }
+  else if (url.protocol === 'ipfs:') {
+    cid = url.hostname;
+  }
+  else {
     return cb({
-      statusCode: 200,
-      mimeType: 'image/png',
-      data: createReadStream('/Users/robin/Code/etsaur.png'),
+      statusCode: 421, // Misdirected Request
+      mimeType: 'application/json',
+      data: createStream(JSON.stringify({
+        err: true,
+        msg: `Backend does not support requests for scheme "${url.scheme}".`,
+      }, null, 2)),
     });
   }
-  let background = /ipfs:\/\/deadb33f\/\w+/.test(req.url) ? req.url.replace('ipfs://deadb33f/', '') : 'red'
-  cb({
-    statusCode: 200,
-    mimeType: 'text/html',
-    data: createStream(`<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Success</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: ${background};
-    }
-  </style>
-</head>
-  <body>
-    <p>Ok!</p>
-  </body>
-</html>
-`),
+  if (req.method !== 'get') return cb({
+    statusCode: 405, // Method Not Allowed
+    mimeType: 'application/json',
+    data: createStream(JSON.stringify({
+      err: true,
+      msg: `Request method "${req.method}" is not supported.`,
+    }, null, 2)),
   });
-  console.log(`DONE!`);
+  // Because we understand the data model used in Envoyager, we should use that when possible to obtain the correct media
+  // type as specified at creation. However, for temporary expediency we use wasmagic detection.
+  const value = getDag(cid, url.pathname);
+  if (value instanceof Uint8Array && value.constructor.name === 'Uint8Array') {
+    const magic = await WASMagic.create();
+    const asBuf = Buffer.from(value);
+    console.warn(`Value is binary, with type ${magic.getMime(asBuf)}`);
+    cb({
+      statusCode: 200,
+      mimeType: magic.getMime(asBuf),
+      data: createStream(value),
+    });
+  }
+  else {
+    console.warn(JSON.stringify(value, null, 2));
+    cb({
+      statusCode: 200,
+      mimeType: 'application/json',
+      data: createStream(JSON.stringify(value, null, 2)),
+    });
+  }
 }

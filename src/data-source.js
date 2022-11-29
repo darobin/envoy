@@ -1,7 +1,7 @@
 
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { mkdir, access, writeFile } from "node:fs/promises";
+import { mkdir, access, writeFile, readdir } from "node:fs/promises";
 import { ipcMain } from 'electron';
 import mime from 'mime-types';
 import saveJSON from './save-json.js';
@@ -12,6 +12,7 @@ const { handle } = ipcMain;
 const dataDir = join(homedir(), '.envoyage');
 const identitiesDir = join(dataDir, 'identities');
 const didRx = /^did:[\w-]+:\S+/;
+const ipnsFile = 'ipns.json';
 
 export async function initDataSource () {
   await mkdir(identitiesDir, { recursive: true });
@@ -28,10 +29,12 @@ export async function initDataSource () {
 }
 
 async function loadIdentities () {
-  // XXX
-  //  - list dirs under .envoyage/identities
-  //  - map each into the JSON that matches
-  return loadJSON(join(dataDir, 'identities.json'));
+  const ids = await readdir(identitiesDir);
+  const identities = [];
+  for (const idDir of ids) {
+    identities.push(await loadJSON(join(identitiesDir, idDir, ipnsFile)));
+  }
+  return identities;
 }
 
 async function createIdentity (evt, { name, did, avatar, banner }) {
@@ -78,7 +81,7 @@ async function createIdentity (evt, { name, did, avatar, banner }) {
     feed.creator = `ipns://${personIPNS.name}`;
     const feedCID = await putDagAndPin(feed);
     await publishIPNS(keyDir, `${did}/root-feed`, feedCID);
-    await saveJSON(join(didDir, 'ipns'), { ipns: personIPNS });
+    await saveJSON(join(didDir, ipnsFile), { ipns: personIPNS });
     return '';
   }
   catch (err) {
