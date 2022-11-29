@@ -22,6 +22,8 @@ class EnvoyageRootRoute extends LitElement {
         return html`<nv-main></nv-main>`;
       case 'create-identity':
         return html`<nv-create-identity></nv-create-identity>`;
+      case 'show-identity':
+        return html`<nv-show-identity identity=${this.params.id}></nv-show-identity>`;
       default:
         return html`<nv-404></nv-404>`;
     }

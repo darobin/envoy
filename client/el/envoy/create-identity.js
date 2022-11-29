@@ -1,6 +1,7 @@
 
 import { LitElement, css, html, nothing } from '../../../deps/lit.js';
 import { buttonStyles } from './button-styles.js';
+import { getStore } from '../../db/model.js';
 
 class EnvoyageCreateIdentity extends LitElement {
   static styles = [css`
@@ -76,6 +77,7 @@ class EnvoyageCreateIdentity extends LitElement {
   }
 
   async formHandler (ev) {
+    ev.preventDefault();
     const fd = new FormData(ev.target);
     const data = {};
     for (let [key, value] of fd.entries()) {
@@ -90,25 +92,18 @@ class EnvoyageCreateIdentity extends LitElement {
       };
     }
     this.errMsg = await window.envoyage.createIdentity(data);
-    this.requestUpdate();
-    ev.preventDefault();
+    const nav = getStore('navigation');
+    if (this.errMsg) this.requestUpdate();
+    else {
+      nav.set({ screen: 'show-identity', params: { id: data.did }});
+    }
   }
   // XXX
   // we need to:
-  // - [ ] write, wire, and manage the form
-  // - [ ] save the data back to the store
-  // - [ ] generate a key pair for this identity, and have a store (back and front) for it, wired
   // - [ ] reload identities so that the app changes state
-  // - [ ] the created identity needs to get stored on IPFS
-  //    - [ ] a derived key needs to be created and used to produce an IPNS name pointing to that person's IPLD
-  //      - [ ] this wrangling of IPNS with derived keys created for each name is generic, needs a local store, lib, etc.
-  //    - [ ] the IPNS needs to be made available for copying from the UI
-  //    - [ ] it also needs to be generally available in the store so it can be the creator field (until we figure out which DID to use)
+  // - [ ] the IPNS needs to be made available for copying from the UI
+  // - [ ] it also needs to be generally available in the store so it can be the creator field (until we figure out which DID to use)
   // - [ ] when we create an IPNS for feeds, we can also make a QR code for them, to be easily followed!
-  //
-  // in the below:
-  //  - have the form and its handling here, super simple native-based stuff with FormData and submit, none of that crap
-  //    with wiring
   render () {
     const err = this.errMsg ? html`<div class="error-message">${this.errMsg}</div>` : nothing;
     return html`<nv-box title="Create Identity">

@@ -6,4 +6,9 @@ module.exports = {
   outDir: 'build',
   mainTarget: 'electron16.0-main',
   preloadTarget: 'electron16.0-preload',
+  customConfig: {
+    experiments: {
+      topLevelAwait: true,
+    },
+  },
 };
