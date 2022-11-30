@@ -1,6 +1,5 @@
 
 import { PassThrough } from 'stream';
-// import { createReadStream } from 'node:fs';
 import { Buffer } from 'node:buffer';
 import { WASMagic } from 'wasmagic';
 import { resolveIPNS, getDag } from './ipfs-node.js';

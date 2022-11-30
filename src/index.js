@@ -7,6 +7,8 @@ import makeRel from './rel.js';
 let mainWindow;
 const rel = makeRel(import.meta.url);
 
+console.warn(`STARTING`);
+
 // there can be only one
 const singleInstanceLock = app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
@@ -40,9 +42,12 @@ protocol.registerSchemesAsPrivileged([
 ]);
 app.enableSandbox();
 app.whenReady().then(async () => {
+  console.warn(`READY`);
   protocol.registerStreamProtocol('ipfs', ipfsProtocolHandler);
   protocol.registerStreamProtocol('ipns', ipfsProtocolHandler);
+  console.warn(`PROTOCOLS REGISTERED`);
   await initDataSource();
+  console.warn(`DATA READY`);
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
     width,
@@ -57,9 +62,10 @@ app.whenReady().then(async () => {
       preload: rel('../build/preload.js'),
     },
   });
-
+  console.warn(`LOADING…`);
   mainWindow.loadFile('index.html');
   mainWindow.once('ready-to-show', () => {
+    console.warn(`SHOWING`);
     mainWindow.show();
   });
   const { webContents } = mainWindow;
