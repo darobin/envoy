@@ -1,6 +1,6 @@
 
-import { join } from 'node:path';
-import { readFile, writeFile } from "node:fs/promises";
+import { join } from 'path';
+import { readFile, writeFile } from "fs/promises";
 import { create as createNode } from 'ipfs-core';
 import sanitize from 'sanitize-filename';
 

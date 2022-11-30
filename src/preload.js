@@ -1,7 +1,7 @@
 
-import { contextBridge, ipcRenderer } from 'electron';
+const { contextBridge, ipcRenderer } = require('electron');
 
-const { invoke } = ipcRenderer
+const { invoke } = ipcRenderer;
 
 contextBridge.exposeInMainWorld('envoyage',{
   // identities

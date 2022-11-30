@@ -1,6 +1,6 @@
 
 import { PassThrough } from 'stream';
-import { Buffer } from 'node:buffer';
+import { Buffer } from 'buffer';
 import { WASMagic } from 'wasmagic';
 import { resolveIPNS, getDag } from './ipfs-node.js';
 

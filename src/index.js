@@ -23,24 +23,6 @@ else {
   });
 }
 
-// I am not clear at all as to what the privileges mean. They are listed at
-// https://www.electronjs.org/docs/latest/api/structures/custom-scheme but that is harldy
-// informative. https://www.electronjs.org/docs/latest/api/protocol#protocolregisterschemesasprivilegedcustomschemes
-// is pretty clear that the behaviour we want requires at least `standard`.
-const privileges = {
-  standard: true,
-  secure: false,
-  bypassCSP: false,
-  allowServiceWorkers: false,
-  supportFetchAPI: true,
-  corsEnabled: false,
-  stream: true,
-};
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'ipfs', privileges },
-  { scheme: 'ipns', privileges },
-]);
-app.enableSandbox();
 app.whenReady().then(async () => {
   console.warn(`READY`);
   protocol.registerStreamProtocol('ipfs', ipfsProtocolHandler);
@@ -59,7 +41,7 @@ app.whenReady().then(async () => {
     icon: './img/icon.png',
     webPreferences: {
       webviewTag: true, // I know that this isn't great, but the alternatives aren't there yet
-      preload: rel('../build/preload.js'),
+      preload: rel('./preload.js'),
     },
   });
   console.warn(`LOADING…`);

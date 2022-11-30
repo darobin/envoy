@@ -1,7 +1,7 @@
 
-import { homedir } from 'node:os';
-import { join } from 'node:path';
-import { mkdir, access, writeFile, readdir } from "node:fs/promises";
+import { homedir } from 'os';
+import { join } from 'path';
+import { mkdir, access, writeFile, readdir } from "fs/promises";
 import { ipcMain } from 'electron';
 import mime from 'mime-types';
 import saveJSON from './save-json.js';

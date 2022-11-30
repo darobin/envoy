@@ -1,5 +1,5 @@
 
-import { readFile } from 'node:fs/promises';
+import { readFile } from 'fs/promises';
 
 export default async function loadJSON (url) {
   const data = await readFile(url);

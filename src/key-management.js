@@ -1,7 +1,7 @@
 
-import { subtle } from 'node:crypto';
-import { join } from 'node:path';
-import { readFile, writeFile } from "node:fs/promises";
+import { subtle } from 'crypto';
+import { join } from 'path';
+import { readFile, writeFile } from "fs/promises";
 
 const keyParams = { name: 'ECDA', namedCurve: 'P-521' };
 const keyExtractable = true;
