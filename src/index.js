@@ -49,6 +49,7 @@ app.whenReady().then(async () => {
   webContents.on('before-input-event', makeKeyDownMatcher('cmd+R', reload));
   webContents.on('before-input-event', makeKeyDownMatcher('ctrl+R', reload));
   webContents.on('before-input-event', makeKeyDownMatcher('cmd+alt+I', openDevTools));
+  webContents.on('before-input-event', makeKeyDownMatcher('ctrl+alt+I', openDevTools));
 });
 
 app.on('will-quit', shutdown);

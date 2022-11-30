@@ -14,22 +14,27 @@ export const node = await createNode();
 export async function shutdown () {
   await node.stop();
 }
-process.on('SIGINT', shutdown);
+process.on('SIGINT', async () => {
+  try {
+    await shutdown();
+  }
+  catch (err) {/**/}
+  process.exit();
+});
 
 function cleanID (id) {
   return sanitize(id.replace(/:/g, '_'));
 }
 
-// XXX it might not be possible to recursively pin a non-DAG
 export async function putBlockAndPin (buffer) {
-  const cid = await node.block.put(new Uint8Array(buffer));
-  node.pin.add(cid);
+  const cid = await node.block.put(new Uint8Array(buffer), { format: 'raw', pin: true, version: 1 });
+  // await node.pin.add(cid, { recursive: false });
   return cid;
 }
 
 export async function putDagAndPin (obj) {
-  const cid = await node.dag.put(obj);
-  node.pin.add(cid);
+  const cid = await node.dag.put(obj, { pin: true });
+  // await node.pin.add(cid);
   return cid;
 }
 
@@ -62,13 +67,13 @@ async function provideKey (keyFile, cleanName) {
 
 export async function publishIPNS (keyDir, name, cid) {
   await dirCryptoKey(keyDir, name);
-  const { name: ipnsName } = node.name.publish(cid, { key: cleanID(name) });
+  const { name: ipnsName } = await node.name.publish(cid, { key: cleanID(name) });
   return ipnsName;
 }
 
 export async function resolveIPNS (ipns) {
-  const resolved = node.name.resolve(`/ipns/${ipns}`, { recursive: true });
-  // we can an iterable array back
+  const resolved = await node.name.resolve(`/ipns/${ipns}`, { recursive: true });
+  // we get an iterable array back
   let res;
   for await (const target of resolved) res = target;
   return res.replace('/ipfs/', '');
