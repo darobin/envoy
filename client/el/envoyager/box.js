@@ -1,7 +1,7 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
 
-class EnvoyageBox extends LitElement {
+class EnvoyagerBox extends LitElement {
   static properties = {
     title: String,
   };
@@ -37,4 +37,4 @@ static styles = css`
     </section>`;
   }
 }
-customElements.define('nv-box', EnvoyageBox);
+customElements.define('nv-box', EnvoyagerBox);

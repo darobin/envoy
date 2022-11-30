@@ -2,7 +2,7 @@
 import { LitElement, html } from '../../../deps/lit.js';
 import { getStore } from '../../db/model.js';
 
-class EnvoyageRootRoute extends LitElement {
+class EnvoyagerRootRoute extends LitElement {
   static properties = {
     screen: { attribute: false },
     component: { attribute: false },
@@ -29,4 +29,4 @@ class EnvoyageRootRoute extends LitElement {
     }
   }
 }
-customElements.define('nv-root-route', EnvoyageRootRoute);
+customElements.define('nv-root-route', EnvoyagerRootRoute);

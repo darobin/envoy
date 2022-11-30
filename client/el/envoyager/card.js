@@ -7,7 +7,7 @@ import { LitElement, css, html } from '../../../deps/lit.js';
 // remote/untrusted content is not able to create a <webview> tag with a possibly malicious preload script. You can
 // use the will-attach-webview event on webContents to strip away the preload script and to validate or alter the
 // <webview>'s initial settings.
-class EnvoyageCard extends LitElement {
+class EnvoyagerCard extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -33,4 +33,4 @@ class EnvoyageCard extends LitElement {
     return html`<div><webview src=${this.src}></webview></div>`;
   }
 }
-customElements.define('nv-card', EnvoyageCard);
+customElements.define('nv-card', EnvoyagerCard);

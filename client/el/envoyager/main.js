@@ -1,7 +1,7 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
 
-class EnvoyageMain extends LitElement {
+class EnvoyagerMain extends LitElement {
   static styles = css`
     :host {
     }
@@ -17,4 +17,4 @@ class EnvoyageMain extends LitElement {
     </div>`;
   }
 }
-customElements.define('nv-main', EnvoyageMain);
+customElements.define('nv-main', EnvoyagerMain);

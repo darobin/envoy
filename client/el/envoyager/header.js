@@ -1,7 +1,7 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
 
-class EnvoyageHeader extends LitElement {
+class EnvoyagerHeader extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -52,4 +52,4 @@ class EnvoyageHeader extends LitElement {
     </header>`;
   }
 }
-customElements.define('nv-header', EnvoyageHeader);
+customElements.define('nv-header', EnvoyagerHeader);

@@ -3,7 +3,7 @@ import { LitElement, css, html } from '../../../deps/lit.js';
 import { buttonStyles } from './button-styles.js';
 // import { getStore } from '../../db/model.js';
 
-class EnvoyageShowIdentity extends LitElement {
+class EnvoyagerShowIdentity extends LitElement {
   static styles = [css`
     :host {
       display: block;
@@ -80,4 +80,4 @@ class EnvoyageShowIdentity extends LitElement {
     return html`<p>Identity!</p>`;
   }
 }
-customElements.define('nv-show-identity', EnvoyageShowIdentity);
+customElements.define('nv-show-identity', EnvoyagerShowIdentity);

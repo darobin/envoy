@@ -4,7 +4,7 @@ import { buttonStyles } from './button-styles.js';
 import { getStore } from '../../db/model.js';
 import { initIdentities }  from '../../db/identities.js';
 
-class EnvoyageCreateIdentity extends LitElement {
+class EnvoyagerCreateIdentity extends LitElement {
   static styles = [css`
     :host {
       display: block;
@@ -125,4 +125,4 @@ class EnvoyageCreateIdentity extends LitElement {
     </nv-box>`;
   }
 }
-customElements.define('nv-create-identity', EnvoyageCreateIdentity);
+customElements.define('nv-create-identity', EnvoyagerCreateIdentity);

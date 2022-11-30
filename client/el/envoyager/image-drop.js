@@ -2,10 +2,11 @@
 import { LitElement, css, html } from '../../../deps/lit.js';
 
 // XXX
-//  - add support for clicking to trigger picker instead
+//  - add support for clicking to trigger picker instead by triggering an intent
+//    and having one of the intent handlers be native
 
 // some credit due to https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
-class EnvoyageImageDrop extends LitElement {
+class EnvoyagerImageDrop extends LitElement {
   // the idea is that the context can override this
   static styles = css`
     :host {
@@ -85,4 +86,4 @@ class EnvoyageImageDrop extends LitElement {
     </div>`;
   }
 }
-customElements.define('nv-image-drop', EnvoyageImageDrop);
+customElements.define('nv-image-drop', EnvoyagerImageDrop);
