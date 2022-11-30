@@ -33,10 +33,7 @@
     "rules": {}
   },
   "devDependencies": {
-    "build-electron": "^1.0.5",
-    "concurrently": "^7.5.0",
-    "eslint": "^8.26.0",
-    "wait-on": "^6.0.1"
+    "eslint": "^8.26.0"
   },
   "dependencies": {
     "bufferutil": "^4.0.7",
