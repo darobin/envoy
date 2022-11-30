@@ -2,6 +2,7 @@
 import { homedir } from 'os';
 import { join } from 'path';
 import { mkdir, access, writeFile, readdir } from "fs/promises";
+import { Buffer } from 'buffer';
 import { ipcMain } from 'electron';
 import mime from 'mime-types';
 import saveJSON from './save-json.js';
@@ -9,7 +10,7 @@ import loadJSON from './load-json.js';
 import { putBlockAndPin, putDagAndPin, dirCryptoKey, publishIPNS } from './ipfs-node.js';
 
 const { handle } = ipcMain;
-const dataDir = join(homedir(), '.envoyage');
+const dataDir = join(homedir(), '.envoyager');
 const identitiesDir = join(dataDir, 'identities');
 const didRx = /^did:[\w-]+:\S+/;
 const ipnsFile = 'ipns.json';
@@ -37,7 +38,7 @@ async function loadIdentities () {
   return identities;
 }
 
-async function createIdentity (evt, { name, did, avatar, banner }) {
+async function createIdentity (evt, { name, did, avatar, banner } = {}) {
   try {
     if (!name) return 'Missing name.';
     if (!did || !didRx.test(did)) return 'Invalid or missing DID.';
@@ -49,15 +50,14 @@ async function createIdentity (evt, { name, did, avatar, banner }) {
       return 'DID already exists here.';
     }
     catch (err) { /* noop */ }
-    await mkdir(didDir);
+    await mkdir(keyDir, { recursive: true });
     const person = {
       $type: 'Person',
       $id: did,
       name,
-      feed: 'XXXX',
     };
     const applyImage = async (name, source) => {
-      writeFile(join(didDir, `${name}.${mime.extension(source.mediaType)}`), source.buffer);
+      writeFile(join(didDir, `${name}.${mime.extension(source.mediaType)}`), Buffer.from(source.buffer));
       person[name] = {
         $type: 'Image',
         mediaType: source.mediaType,

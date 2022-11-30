@@ -33,7 +33,7 @@ export async function ipfsProtocolHandler (req, cb) {
       }, null, 2)),
     });
   }
-  if (req.method !== 'get') return cb({
+  if (req.method !== 'GET') return cb({
     statusCode: 405, // Method Not Allowed
     mimeType: 'application/json',
     data: createStream(JSON.stringify({

@@ -1,6 +1,7 @@
 
 import { app, protocol, BrowserWindow, screen }  from 'electron';
 import { ipfsProtocolHandler } from './ipfs-handler.js';
+import { shutdown } from './ipfs-node.js';
 import { initDataSource } from './data-source.js';
 import makeRel from './rel.js';
 
@@ -49,6 +50,8 @@ app.whenReady().then(async () => {
   webContents.on('before-input-event', makeKeyDownMatcher('ctrl+R', reload));
   webContents.on('before-input-event', makeKeyDownMatcher('cmd+alt+I', openDevTools));
 });
+
+app.on('will-quit', shutdown);
 
 function reload () {
   console.log('RELOAD');

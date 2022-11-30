@@ -82,7 +82,6 @@ class EnvoyagerCreateIdentity extends LitElement {
     const fd = new FormData(ev.target);
     const data = {};
     for (let [key, value] of fd.entries()) {
-      console.warn(key, value);
       data[key] = value;
     }
     for (const k of ['avatar', 'banner']) {
@@ -92,6 +91,7 @@ class EnvoyagerCreateIdentity extends LitElement {
         buffer: await this[k].arrayBuffer(),
       };
     }
+    console.warn(data);
     this.errMsg = await window.envoyage.createIdentity(data);
     const nav = getStore('navigation');
     if (this.errMsg) this.requestUpdate();

@@ -37,11 +37,11 @@ class EnvoyagerHeader extends LitElement {
 
   render () {
     return html`<header>
-      <svg width="260" height="50" viewport="0 0 400 50" id="logo">
-        <text x="130" y="40" text-anchor="middle">envo<tspan>y</tspan>age</text>
+      <svg width="276" height="50" viewport="0 0 400 50" id="logo">
+        <text x="138" y="40" text-anchor="middle">envo<tspan>y</tspan>ager</text>
         <path d="
-          M5,10 L118,10 M132,10 L255,10
-          L255,47
+          M5,10 L118,10 M132,10 L269,10
+          L269,47
           L205,47 M181,47 L142,47 M128,47 L5,47
           L5,10
         "></path>

@@ -1,6 +1,7 @@
 
 import { join } from 'path';
 import { readFile, writeFile } from "fs/promises";
+import process from 'process';
 import { create as createNode } from 'ipfs-core';
 import sanitize from 'sanitize-filename';
 
@@ -10,10 +11,16 @@ const password = 'Steps to an Ecology of Mind';
 
 export const node = await createNode();
 
+export async function shutdown () {
+  await node.stop();
+}
+process.on('SIGINT', shutdown);
+
 function cleanID (id) {
   return sanitize(id.replace(/:/g, '_'));
 }
 
+// XXX it might not be possible to recursively pin a non-DAG
 export async function putBlockAndPin (buffer) {
   const cid = await node.block.put(new Uint8Array(buffer));
   node.pin.add(cid);
@@ -55,7 +62,8 @@ async function provideKey (keyFile, cleanName) {
 
 export async function publishIPNS (keyDir, name, cid) {
   await dirCryptoKey(keyDir, name);
-  return node.name.publish(cid, { key: cleanID(name) });
+  const { name: ipnsName } = node.name.publish(cid, { key: cleanID(name) });
+  return ipnsName;
 }
 
 export async function resolveIPNS (ipns) {
