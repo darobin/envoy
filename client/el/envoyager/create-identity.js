@@ -67,6 +67,8 @@ class EnvoyagerCreateIdentity extends LitElement {
     }
     .error-message {
       color: var(--error);
+      margin-top: 1rem;
+      margin-left: var(--left-pad);
     }
 `, buttonStyles];
 

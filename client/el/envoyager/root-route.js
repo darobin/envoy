@@ -5,18 +5,18 @@ import { getStore } from '../../db/model.js';
 class EnvoyagerRootRoute extends LitElement {
   static properties = {
     screen: { attribute: false },
-    component: { attribute: false },
   };
 
   constructor () {
     super();
-    getStore('router').subscribe(({ screen, component }) => {
+    getStore('router').subscribe(({ screen = 'main', params = {} } = {}) => {
       this.screen = screen;
-      this.component = component;
+      this.params = params;
     });
   }
 
   render () {
+    console.warn(`rendering ${this.screen}(${JSON.stringify(this.params)})`);
     switch (this.screen) {
       case 'main':
         return html`<nv-main></nv-main>`;

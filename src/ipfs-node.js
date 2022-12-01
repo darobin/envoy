@@ -76,7 +76,7 @@ export async function publishIPNS (keyDir, name, cid) {
   await dirCryptoKey(keyDir, name);
   if (typeof cid === 'string') cid = CID.parse(cid);
   const { name: ipnsName } = await node.name.publish(cid, { key: cleanID(name) });
-  return base32.encode(base58btc.decode(ipnsName));
+  return base32.encode(base58btc.decode(`z${ipnsName}`));
 }
 
 export async function resolveIPNS (ipns) {

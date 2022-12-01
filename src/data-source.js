@@ -74,13 +74,13 @@ async function createIdentity (evt, { name, did, avatar, banner } = {}) {
       items: [],
     };
     const tmpFeedCID = await putDagAndPin(feed);
-    const feedIPNS = await publishIPNS(keyDir, `${did}/root-feed`, tmpFeedCID);
-    person.feed = `ipns://${feedIPNS.name}`;
+    const feedIPNS = await publishIPNS(keyDir, `${did}.root-feed`, tmpFeedCID);
+    person.feed = `ipns://${feedIPNS}`;
     const personCID = await putDagAndPin(person);
     const personIPNS = await publishIPNS(keyDir, did, personCID);
-    feed.creator = `ipns://${personIPNS.name}`;
+    feed.creator = `ipns://${personIPNS}`;
     const feedCID = await putDagAndPin(feed);
-    await publishIPNS(keyDir, `${did}/root-feed`, feedCID);
+    await publishIPNS(keyDir, `${did}.root-feed`, feedCID);
     await saveJSON(join(didDir, ipnsFile), { ipns: personIPNS });
     return '';
   }
