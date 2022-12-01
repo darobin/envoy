@@ -1,9 +1,13 @@
 
 import { LitElement, css, html } from '../../../deps/lit.js';
-import { buttonStyles } from './button-styles.js';
-// import { getStore } from '../../db/model.js';
+import { getStore } from '../../db/model.js';
 
 class EnvoyagerShowIdentity extends LitElement {
+  static properties = {
+    person: { attribute: false },
+    people: { attribute: false },
+    identity: {},
+  };
   static styles = [css`
     :host {
       display: block;
@@ -13,37 +17,21 @@ class EnvoyagerShowIdentity extends LitElement {
     }
     #banner {
       height: 200px;
+      background-color: var(--highlight);
+      background-size: cover;
     }
     #avatar {
       height: 142px;
       width: 142px;
       margin: -42px auto auto 1rem;
       border-radius: 50%;
+      background-color: #000;
+      background-size: cover;
+      border: 3px solid #fff;
     }
-    .form-line {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin-top: 1rem;
+    pre {
+      margin-top: 0;
       margin-left: var(--left-pad);
-    }
-    .form-action {
-      text-align: right;
-      /* border: 1px solid #000; */
-      padding: 1px;
-      margin-top: 2rem;
-    }
-    input {
-      border: none;
-      border-bottom: 1px solid #ccc;
-      outline: none;
-      transition: all 0.5s;
-    }
-    input:focus {
-      border-color: var(--highlight);
-    }
-    input:not(:blank):invalid {
-      border-color: var(--error);
     }
     #name {
       display: block;
@@ -55,29 +43,31 @@ class EnvoyagerShowIdentity extends LitElement {
       font-variation-settings: "wght" 200;
       letter-spacing: 1px;
     }
-    .form-line > label {
-      flex-basis: 150px;
-    }
-    .form-line > input {
-      flex-grow: 1;
-    }
-    #did {
-      font-family: monospace;
-    }
-    .error-message {
-      color: var(--error);
-    }
-`, buttonStyles];
+`];
 
   constructor () {
     super();
+    this.identity = null;
+    getStore('identities').subscribe(({ people = [] } = {}) => {
+      this.people = people;
+    });
   }
 
-  async formHandler () {
+  willUpdate (props) {
+    console.warn(props);
+    if (props.has('identity') || props.has('people')) {
+      this.person = this.people.find(p => p.$id === this.identity) || null;
+    }
   }
 
   render () {
-    return html`<p>Identity!</p>`;
+    const url = this.person?.url || '';
+    return html`<div>
+      <div id="banner" style=${url && this.person?.banner?.src ? `background-image: url(${url}/banner/src)` : ''}></div>
+      <div id="avatar" style=${url && this.person?.avatar?.src ? `background-image: url(${url}/avatar/src)` : ''}></div>
+      <h2 id="name">${this.person?.name || 'Nameless Internet Entity'}</h2>
+      <pre>${this.person?.$id}</pre>
+    </div>`;
   }
 }
 customElements.define('nv-show-identity', EnvoyagerShowIdentity);

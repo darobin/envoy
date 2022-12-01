@@ -6,8 +6,7 @@ class EnvoyagerHeader extends LitElement {
   static properties = {
     person: { attribute: false },
   };
-
-static styles = css`
+  static styles = css`
     :host {
       display: block;
       background: #000;
