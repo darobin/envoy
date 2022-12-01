@@ -98,8 +98,8 @@ class EnvoyagerCreateIdentity extends LitElement {
     const nav = getStore('navigation');
     if (this.errMsg) this.requestUpdate();
     else {
-      nav.set({ screen: 'show-identity', params: { id: data.did }});
       await initIdentities();
+      nav.go('show-identity', { id: data.did });
     }
   }
   // XXX

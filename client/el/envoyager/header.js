@@ -34,14 +34,44 @@ static styles = css`
       stroke-width: 1.5px;
       stroke: var(--highlight);
     }
+    header {
+      position: relative;
+    }
+    #person {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    #person button {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border: 2px solid #fff;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease-in 0s;
+    }
+    #person button:hover {
+      border-color: var(--highlight);
+    }
+    #person img {
+      border-radius: 50%;
+    }
   `;
 
   constructor () {
     super();
     getStore('identities').subscribe(({ people = [] } = {}) => {
-      console.warn(`PEOPLE CHANGE`, people);
       this.person = people[0] || null;
     });
+    this.nav = getStore('navigation');
+  }
+
+  goToPerson () {
+    this.nav.go('show-identity', { id: this.person.$id });
   }
 
   render () {
@@ -57,7 +87,13 @@ static styles = css`
         <path d="M122,2 L135,32 L147,18 L135,50"></path>
         <path d="M122,2 L132,37 L147,18 L135,50"></path>
       </svg>
-      ${this.person ? html`<span style="color: red">${this.person.name}</span>` : nothing}
+      ${
+        this.person
+        ? html`<div id="person">
+            <button @click=${this.goToPerson}><img src=${`${this.person.url}/avatar/src`} width="50" height="50" alt=${this.person.name}></button>
+          </div>`
+        : nothing
+      }
     </header>`;
   }
 }

@@ -11,7 +11,7 @@ export async function initIdentities () {
   try {
     const ipnsList = await window.envoyage.loadIdentities();
     const resList = await Promise.all(ipnsList.map(({ ipns }) => fetch(`ipns://${ipns}`, { headers: { Accept: 'application/json' }})));
-    const people = await Promise.all(resList.map(r => r.json()));
+    const people = (await Promise.all(resList.map(r => r.json()))).map((p, idx) => ({...p, url: `ipns://${ipnsList[idx].ipns}`}));
     store.set({ state: 'loaded', people });
   }
   catch (err) {
