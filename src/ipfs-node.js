@@ -4,6 +4,8 @@ import { readFile, writeFile } from "fs/promises";
 import process from 'process';
 import { create as createNode } from 'ipfs-core';
 import sanitize from 'sanitize-filename';
+import { base58btc } from "multiformats/bases/base58";
+import { base32 } from "multiformats/bases/base32";
 
 // 🚨🚨🚨 WARNING 🚨🚨🚨
 // nothing here is meant to be safe, this is all demo code, the keys are just stored on disk, etc.
@@ -65,14 +67,19 @@ async function provideKey (keyFile, cleanName) {
   await writeFile(keyFile, await node.key.export(cleanName, password));
 }
 
+// js-ipfs always produces (and only accepts) IPNS names that base58btc, unprefixed (because YOLO).
+// That doesn't work in URLs because the origin part has to be case-insensitive.
+// So we convert to base32, and then convert back (removing the prefix) for resolution.
 export async function publishIPNS (keyDir, name, cid) {
   await dirCryptoKey(keyDir, name);
   const { name: ipnsName } = await node.name.publish(cid, { key: cleanID(name) });
-  return ipnsName;
+  return base32.encode(base58btc.decode(ipnsName));
 }
 
 export async function resolveIPNS (ipns) {
-  const resolved = await node.name.resolve(`/ipns/${ipns}`, { recursive: true });
+  const b58IPNS = base58btc.encode(base32.decode(ipns)).replace(/^z/, '');
+  console.warn(`b58=${b58IPNS}`);
+  const resolved = await node.name.resolve(`/ipns/${b58IPNS}`, { recursive: true });
   // we get an iterable array back
   let res;
   for await (const target of resolved) res = target;

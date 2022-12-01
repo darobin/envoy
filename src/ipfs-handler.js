@@ -18,7 +18,9 @@ export async function ipfsProtocolHandler (req, cb) {
   const url = new URL(req.url);
   let cid;
   if (url.protocol === 'ipns:') {
+    console.warn(`resolving ${url.hostname}`);
     cid = await resolveIPNS(url.hostname);
+    console.warn(`got ${cid}`);
   }
   else if (url.protocol === 'ipfs:') {
     cid = url.hostname;
@@ -43,7 +45,9 @@ export async function ipfsProtocolHandler (req, cb) {
   });
   // Because we understand the data model used in Envoyager, we should use that when possible to obtain the correct media
   // type as specified at creation. However, for temporary expediency we use wasmagic detection.
-  const value = getDag(cid, url.pathname);
+  // XXX the bug is around here
+  console.warn(`Getting ${cid} with "${url.pathname}"`);
+  const value = await getDag(cid, url.pathname);
   if (value instanceof Uint8Array && value.constructor.name === 'Uint8Array') {
     const magic = await WASMagic.create();
     const asBuf = Buffer.from(value);

@@ -30,7 +30,7 @@ export async function initDataSource () {
 }
 
 async function loadIdentities () {
-  const ids = await readdir(identitiesDir);
+  const ids = (await readdir(identitiesDir)).filter(dir => !/^\./.test(dir));
   const identities = [];
   for (const idDir of ids) {
     identities.push(await loadJSON(join(identitiesDir, idDir, ipnsFile)));
