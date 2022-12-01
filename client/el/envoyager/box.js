@@ -6,7 +6,7 @@ class EnvoyagerBox extends LitElement {
     title: String,
   };
 
-static styles = css`
+  static styles = css`
     :host {
       display: block;
       max-width: 100%;

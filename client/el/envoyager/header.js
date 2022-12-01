@@ -1,8 +1,13 @@
 
-import { LitElement, css, html } from '../../../deps/lit.js';
+import { LitElement, css, html, nothing } from '../../../deps/lit.js';
+import { getStore } from '../../db/model.js';
 
 class EnvoyagerHeader extends LitElement {
-  static styles = css`
+  static properties = {
+    person: { attribute: false },
+  };
+
+static styles = css`
     :host {
       display: block;
       background: #000;
@@ -33,6 +38,10 @@ class EnvoyagerHeader extends LitElement {
 
   constructor () {
     super();
+    getStore('identities').subscribe(({ people = [] } = {}) => {
+      console.warn(`PEOPLE CHANGE`, people);
+      this.person = people[0] || null;
+    });
   }
 
   render () {
@@ -48,7 +57,7 @@ class EnvoyagerHeader extends LitElement {
         <path d="M122,2 L135,32 L147,18 L135,50"></path>
         <path d="M122,2 L132,37 L147,18 L135,50"></path>
       </svg>
-      <slot></slot>
+      ${this.person ? html`<span style="color: red">${this.person.name}</span>` : nothing}
     </header>`;
   }
 }

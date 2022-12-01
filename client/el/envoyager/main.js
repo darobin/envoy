@@ -4,6 +4,7 @@ import { LitElement, css, html } from '../../../deps/lit.js';
 class EnvoyagerMain extends LitElement {
   static styles = css`
     :host {
+      display: block;
     }
   `;
 
@@ -14,6 +15,7 @@ class EnvoyagerMain extends LitElement {
   render () {
     return html`<div>
       Drop Envoy here.
+      <slot></slot>
     </div>`;
   }
 }

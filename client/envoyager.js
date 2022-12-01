@@ -18,5 +18,6 @@ import './el/envoyager/create-identity.js';
 import './el/envoyager/show-identity.js';
 import './el/envoyager/box.js';
 import './el/envoyager/image-drop.js';
+import './el/envoyager/loading.js';
 
 await initIdentities();

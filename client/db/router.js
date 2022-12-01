@@ -15,6 +15,7 @@ const store = derived(
 registerStore('router', store);
 
 function updateRoute ([identities, navigation]) {
-  if (!identities.people.length ) return { screen: 'create-identity' };
+  if (identities.state === 'loading') return { screen: 'app-loading' };
+  if (!identities.people.length) return { screen: 'create-identity' };
   return navigation;
 }

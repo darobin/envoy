@@ -1,11 +1,20 @@
 
-import { LitElement, html } from '../../../deps/lit.js';
+import { LitElement, html, css } from '../../../deps/lit.js';
 import { getStore } from '../../db/model.js';
 
 class EnvoyagerRootRoute extends LitElement {
   static properties = {
     screen: { attribute: false },
   };
+  static styles = css`
+    :host {
+      display: block;
+    }
+    nv-loading {
+      position: absolute;
+      top: 0;
+    }
+  `;
 
   constructor () {
     super();
@@ -18,6 +27,8 @@ class EnvoyagerRootRoute extends LitElement {
   render () {
     console.warn(`rendering ${this.screen}(${JSON.stringify(this.params)})`);
     switch (this.screen) {
+      case 'app-loading':
+        return html`<nv-loading></nv-loading>`;
       case 'main':
         return html`<nv-main></nv-main>`;
       case 'create-identity':
