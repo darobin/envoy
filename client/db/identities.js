@@ -13,6 +13,7 @@ export async function initIdentities () {
     console.warn(ipnsList);
     const resList = await Promise.all(ipnsList.map(({ ipns }) => fetch(`ipns://${ipns}`, { headers: { Accept: 'application/json' }})));
     const people = await Promise.all(resList.map(r => r.json()));
+    console.warn(people);
     store.set({ state: 'loaded', people });
   }
   catch (err) {

@@ -2,6 +2,8 @@
 import { PassThrough } from 'stream';
 import { Buffer } from 'buffer';
 import { WASMagic } from 'wasmagic';
+import { CID } from 'multiformats';
+import { base32 } from "multiformats/bases/base32";
 import { resolveIPNS, getDag } from './ipfs-node.js';
 
 
@@ -14,7 +16,6 @@ function createStream (text) {
 }
 
 export async function ipfsProtocolHandler (req, cb) {
-  console.log(`got request`, req, cb);
   const url = new URL(req.url);
   let cid;
   if (url.protocol === 'ipns:') {
@@ -67,11 +68,23 @@ export async function ipfsProtocolHandler (req, cb) {
     });
   }
   else {
-    console.warn(JSON.stringify(value, null, 2));
+    console.warn(`Value is`, value);
     cb({
       statusCode: 200,
       mimeType: 'application/json',
-      data: createStream(JSON.stringify(value, null, 2)),
+      data: createStream(JSON.stringify(value, ipld2json, 2)),
     });
   }
+}
+
+export function ipld2json (k, v) {
+  // in order to intercept the toJSON on CID, we find CID objects from their parent
+  if (typeof v === 'object' && Object.values(v).find(o => o instanceof CID)) {
+    const ret = {};
+    Object.keys(v).forEach(key => {
+      ret[key] = (v[key] instanceof CID) ? `ipfs://${v[key].toString(base32)}/` : v[key];
+    });
+    return ret;
+  }
+  return v;
 }
