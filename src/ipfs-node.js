@@ -6,6 +6,7 @@ import { create as createNode } from 'ipfs-core';
 import sanitize from 'sanitize-filename';
 import { base58btc } from "multiformats/bases/base58";
 import { base32 } from "multiformats/bases/base32";
+import { CID } from 'multiformats';
 
 // 🚨🚨🚨 WARNING 🚨🚨🚨
 // nothing here is meant to be safe, this is all demo code, the keys are just stored on disk, etc.
@@ -41,6 +42,7 @@ export async function putDagAndPin (obj) {
 }
 
 export async function getDag (cid, path) {
+  if (typeof cid === 'string') cid = CID.parse(cid);
   const { value } = await node.dag.get(cid, { path });
   return value;
 }
@@ -57,7 +59,7 @@ export async function dirCryptoKey (keyDir, name) {
     return;
   }
   catch (err) {
-    console.warn(`generating key with name "${name}"`);
+    // console.warn(`generating key with name "${name}"`);
     await node.key.gen(cleanName);
     await provideKey(keyFile, cleanName);
   }
@@ -72,13 +74,13 @@ async function provideKey (keyFile, cleanName) {
 // So we convert to base32, and then convert back (removing the prefix) for resolution.
 export async function publishIPNS (keyDir, name, cid) {
   await dirCryptoKey(keyDir, name);
+  if (typeof cid === 'string') cid = CID.parse(cid);
   const { name: ipnsName } = await node.name.publish(cid, { key: cleanID(name) });
   return base32.encode(base58btc.decode(ipnsName));
 }
 
 export async function resolveIPNS (ipns) {
   const b58IPNS = base58btc.encode(base32.decode(ipns)).replace(/^z/, '');
-  console.warn(`b58=${b58IPNS}`);
   const resolved = await node.name.resolve(`/ipns/${b58IPNS}`, { recursive: true });
   // we get an iterable array back
   let res;

@@ -18,9 +18,7 @@ export async function ipfsProtocolHandler (req, cb) {
   const url = new URL(req.url);
   let cid;
   if (url.protocol === 'ipns:') {
-    console.warn(`resolving ${url.hostname}`);
     cid = await resolveIPNS(url.hostname);
-    console.warn(`got ${cid}`);
   }
   else if (url.protocol === 'ipfs:') {
     cid = url.hostname;
@@ -45,16 +43,26 @@ export async function ipfsProtocolHandler (req, cb) {
   });
   // Because we understand the data model used in Envoyager, we should use that when possible to obtain the correct media
   // type as specified at creation. However, for temporary expediency we use wasmagic detection.
-  // XXX the bug is around here
-  console.warn(`Getting ${cid} with "${url.pathname}"`);
   const value = await getDag(cid, url.pathname);
   if (value instanceof Uint8Array && value.constructor.name === 'Uint8Array') {
-    const magic = await WASMagic.create();
-    const asBuf = Buffer.from(value);
-    console.warn(`Value is binary, with type ${magic.getMime(asBuf)}`);
+    let mimeType;
+    // our expectation is that raw will generally be wrapped in IPLD, but that will not be true over UnixFS for instance
+    // we poke for mediaType next to what we assume is src in the current path (we could restrict to that)
+    if (url.pathname && url.pathname.length > 1) {
+      try {
+        const mtURL = new URL('mediaType', url.href);
+        mimeType = await getDag(cid, mtURL.pathname);
+      }
+      catch (err) {/**/}
+    }
+    if (!mimeType) {
+      const magic = await WASMagic.create();
+      mimeType = magic.getMime(Buffer.from(value));
+    }
+    console.warn(`Value is binary, with type ${mimeType}`);
     cb({
       statusCode: 200,
-      mimeType: magic.getMime(asBuf),
+      mimeType,
       data: createStream(value),
     });
   }
