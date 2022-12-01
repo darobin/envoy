@@ -43,7 +43,11 @@ class EnvoyagerShowIdentity extends LitElement {
       font-variation-settings: "wght" 200;
       letter-spacing: 1px;
     }
-`];
+    nv-feed-list {
+      margin-left: var(--left-pad);
+      margin-top: 2rem;
+    }
+  `];
 
   constructor () {
     super();
@@ -54,7 +58,6 @@ class EnvoyagerShowIdentity extends LitElement {
   }
 
   willUpdate (props) {
-    console.warn(props);
     if (props.has('identity') || props.has('people')) {
       this.person = this.people.find(p => p.$id === this.identity) || null;
     }
@@ -67,6 +70,7 @@ class EnvoyagerShowIdentity extends LitElement {
       <div id="avatar" style=${url && this.person?.avatar?.src ? `background-image: url(${url}/avatar/src)` : ''}></div>
       <h2 id="name">${this.person?.name || 'Nameless Internet Entity'}</h2>
       <pre>${this.person?.$id}</pre>
+      <nv-feed-list src=${this.person?.feed} addable></nv-feed-list>
     </div>`;
   }
 }

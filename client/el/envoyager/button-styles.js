@@ -30,4 +30,12 @@ button:active {
   background: var(--highlight);
   color: #000;
 }
+button span.icon {
+  /* border-right: 1px solid #fff; */
+  display: inline-block;
+  padding-right: 0.5rem;
+  font-weight: 400;
+  font-variation-settings: "wght" 400;
+  color: var(--highlight);
+}
 `;
