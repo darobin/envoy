@@ -1,6 +1,6 @@
 
 import { LitElement, css, html, nothing } from '../../../deps/lit.js';
-import { buttonStyles } from './button-styles.js';
+import { buttonStyles } from '../../button-styles.js';
 
 class EnvoyagerFeedList extends LitElement {
   static properties = {

@@ -1,6 +1,7 @@
 
 import { LitElement, css, html, nothing } from '../../../deps/lit.js';
-import { buttonStyles } from './button-styles.js';
+import { buttonStyles } from '../../button-styles.js';
+import { formStyles } from '../../form-styles.js';
 import { getStore } from '../../db/model.js';
 import { initIdentities }  from '../../db/identities.js';
 
@@ -22,29 +23,7 @@ class EnvoyagerCreateIdentity extends LitElement {
       border-radius: 50%;
     }
     .form-line {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin-top: 1rem;
       margin-left: var(--left-pad);
-    }
-    .form-action {
-      text-align: right;
-      /* border: 1px solid #000; */
-      padding: 1px;
-      margin-top: 2rem;
-    }
-    input {
-      border: none;
-      border-bottom: 1px solid #ccc;
-      outline: none;
-      transition: all 0.5s;
-    }
-    input:focus {
-      border-color: var(--highlight);
-    }
-    input:not(:blank):invalid {
-      border-color: var(--error);
     }
     #name {
       display: block;
@@ -56,21 +35,13 @@ class EnvoyagerCreateIdentity extends LitElement {
       font-variation-settings: "wght" 200;
       letter-spacing: 1px;
     }
-    .form-line > label {
-      flex-basis: 150px;
-    }
-    .form-line > input {
-      flex-grow: 1;
-    }
     #did {
       font-family: monospace;
     }
     .error-message {
-      color: var(--error);
-      margin-top: 1rem;
       margin-left: var(--left-pad);
     }
-`, buttonStyles];
+  `, formStyles, buttonStyles];
 
   constructor () {
     super();
@@ -102,12 +73,7 @@ class EnvoyagerCreateIdentity extends LitElement {
       nav.go('show-identity', { id: data.did });
     }
   }
-  // XXX
-  // we need to:
-  // - [ ] reload identities so that the app changes state
-  // - [ ] the IPNS needs to be made available for copying from the UI
-  // - [ ] it also needs to be generally available in the store so it can be the creator field (until we figure out which DID to use)
-  // - [ ] when we create an IPNS for feeds, we can also make a QR code for them, to be easily followed!
+
   render () {
     const err = this.errMsg ? html`<div class="error-message">${this.errMsg}</div>` : nothing;
     return html`<nv-box title="Create Identity">

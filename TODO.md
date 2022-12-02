@@ -33,6 +33,10 @@ The downside is that this doesn't really give us composability.
 
 ## Later
 
+  // - [ ] the IPNS needs to be made available for copying from the UI
+  // - [ ] when we create an IPNS for feeds, we can also make a QR code for them, to be easily followed!
+
+
 - [ ] Compare with IPP and Dave's thing
 
 - [ ] resolve an IPID DID to the IPNS-resolved feed

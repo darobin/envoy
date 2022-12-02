@@ -1,5 +1,5 @@
 
-import { css } from '../../../deps/lit.js';
+import { css } from '../deps/lit.js';
 
 export const buttonStyles = css`
 button {

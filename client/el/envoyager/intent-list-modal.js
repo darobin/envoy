@@ -1,5 +1,7 @@
 
 import { LitElement, html, css } from '../../../deps/lit.js';
+import { buttonStyles } from '../../button-styles.js';
+import { formStyles } from '../../form-styles.js';
 
 class EnvoyagerIntentListModal extends LitElement {
   static properties = {
@@ -12,7 +14,7 @@ class EnvoyagerIntentListModal extends LitElement {
     data: { attribute: false },
     intentID: { attribute: false },
   };
-  static styles = css`
+  static styles = [css`
     :host {
       display: none;
     }
@@ -37,12 +39,15 @@ class EnvoyagerIntentListModal extends LitElement {
       align-items: center;
       cursor: pointer;
       padding: 1rem 0;
-      border-bottom: 1px solid #000;
+      border-top: 1px solid #000;
       transition: all 0.15s ease-in 0s;
     }
     .intent-action:hover {
       background: var(--highlight);
       color: #fff;
+    }
+    .intent-action:first-of-type {
+      border: none;
     }
     .icon {
       width: 50px;
@@ -57,17 +62,11 @@ class EnvoyagerIntentListModal extends LitElement {
       font-family: var(--heading-font);
       padding-left: 1rem;
     }
-  `;
+  `, formStyles, buttonStyles];
 
   constructor () {
     super();
-    this.active = false;
-    this.intents = [];
-    this.action = null;
-    this.type = null;
-    this.data = {};
-    this.handlerName = 'Action';
-    this.handlerURL = null;
+    this.resetState();
     window.envoyager.onIntentList((ev, intents, action, type, data, id) => {
       console.warn(`onIntentList`, intents, action, type, data, id);
       this.intents = intents;
@@ -77,6 +76,16 @@ class EnvoyagerIntentListModal extends LitElement {
       this.intentID = id;
       this.active = true;
     });
+  }
+
+  resetState () {
+    this.active = false;
+    this.intents = [];
+    this.action = null;
+    this.type = null;
+    this.data = {};
+    this.handlerName = 'Action';
+    this.handlerURL = null;
   }
 
   selectHandler (ev) {
@@ -91,6 +100,10 @@ class EnvoyagerIntentListModal extends LitElement {
   onCancel () {
     window.intentListener.failure(this.intentID);
   }
+  close () {
+    this.onCancel();
+    this.resetState();
+  }
 
   render () {
     if (!this.handlerURL) {
@@ -103,6 +116,7 @@ class EnvoyagerIntentListModal extends LitElement {
             </div>`))
           : html`<p>No available action matches this intent.</p>`
         }
+        <div class="form-action"><button type="reset" @click=${this.close}>Cancel</button></div>
       </nv-box>`;
     }
     return html`<nv-box title=${this.handlerName}>

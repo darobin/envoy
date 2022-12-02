@@ -21,5 +21,6 @@ import './el/envoyager/image-drop.js';
 import './el/envoyager/loading.js';
 import './el/envoyager/feed-list.js';
 import './el/envoyager/intent-list-modal.js';
+import './el/envoyager/intent-action.js';
 
 await initIdentities();
