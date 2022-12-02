@@ -94,7 +94,7 @@ class EnvoyagerCreateIdentity extends LitElement {
       };
     }
     console.warn(data);
-    this.errMsg = await window.envoyage.createIdentity(data);
+    this.errMsg = await window.envoyager.createIdentity(data);
     const nav = getStore('navigation');
     if (this.errMsg) this.requestUpdate();
     else {

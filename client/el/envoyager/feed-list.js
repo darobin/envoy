@@ -49,9 +49,9 @@ class EnvoyagerFeedList extends LitElement {
     ;
   }
 
-  intendToAddFeed () {
-    const intent = window.envoyager.intent('create', 'envoyager/feed', { parent: this.src, position: 'prepend' });
-    intent.addListener('success', () => this.refresh());
+  async intendToAddFeed () {
+    const intentID = await window.envoyager.intent('create', 'envoyager/feed', { parent: this.src, position: 'prepend' });
+    window.intentListener.once('success', intentID, () => this.refresh());
   }
 
   render () {

@@ -89,11 +89,14 @@ function registerIntent (intent) {
   });
 }
 
-async function showMatchingIntents (ev, action, type, data) {
+async function showMatchingIntents (ev, action, type, data, id) {
+  console.warn(`showMatchingIntents`, action, type, data, id);
   const intents = [];
   const win = ev.senderFrame.top;
+  const done = () => win.send('intent-list', intents, action, type, data, id);
   // make sure to match foo/* in both directions
-  if (!db[action]) return win.send('intent-list', intents, action, type, data);
+  console.warn(`in db`, db[action]);
+  if (!db[action]) return done();
   // get all those that start with foo/
   if (/\/\*$/.test(type)) {
     const [major,] = type.split('/');
@@ -106,5 +109,6 @@ async function showMatchingIntents (ev, action, type, data) {
   else {
     intents.push(...(db[action][type] || []), ...(db[action][type.replace(/\/.*/, '/*')] || []));
   }
-  return win.send('intent-list', intents, action, type, data);
+  console.warn(`found intents`, intents);
+  return done();
 }

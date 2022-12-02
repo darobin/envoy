@@ -10,18 +10,52 @@ class EnvoyagerIntentListModal extends LitElement {
     action: { attribute: false },
     type: { attribute: false },
     data: { attribute: false },
+    intentID: { attribute: false },
   };
   static styles = css`
     :host {
       display: none;
     }
-    :host[active] {
+    :host([active]) {
       display: flex;
       position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
       z-index: 9999;
       background: #0006;
       justify-content: center;
       align-items: center;
+    }
+    nv-box {
+      background: #fff;
+      min-width: 30rem;
+    }
+    .intent-action {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 1rem 0;
+      border-bottom: 1px solid #000;
+      transition: all 0.15s ease-in 0s;
+    }
+    .intent-action:hover {
+      background: var(--highlight);
+      color: #fff;
+    }
+    .icon {
+      width: 50px;
+      height: 50px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 40px;
+      margin-left: 1rem;
+    }
+    .label {
+      font-size: 1.2rem;
+      font-family: var(--heading-font);
+      padding-left: 1rem;
     }
   `;
 
@@ -34,11 +68,13 @@ class EnvoyagerIntentListModal extends LitElement {
     this.data = {};
     this.handlerName = 'Action';
     this.handlerURL = null;
-    window.envoyager.onIntentList((ev, intents, action, type, data) => {
+    window.envoyager.onIntentList((ev, intents, action, type, data, id) => {
+      console.warn(`onIntentList`, intents, action, type, data, id);
       this.intents = intents;
       this.action = action;
       this.type = type;
       this.data = data;
+      this.intentID = id;
       this.active = true;
     });
   }
@@ -47,6 +83,13 @@ class EnvoyagerIntentListModal extends LitElement {
     const { name, url } = ev.target.dataset;
     this.handlerName = name;
     this.handlerURL = url;
+  }
+
+  onComplete () {
+    window.intentListener.success(this.intentID);
+  }
+  onCancel () {
+    window.intentListener.failure(this.intentID);
   }
 
   render () {
@@ -75,3 +118,31 @@ class EnvoyagerIntentListModal extends LitElement {
   }
 }
 customElements.define('nv-intent-list-modal', EnvoyagerIntentListModal);
+
+// singleton
+window.intentListener = new class IntentListener {
+  constructor () {
+    this.successHandlers = {};
+    this.failureHandlers = {};
+    this.completeHandlers = {};
+  }
+  once (type, id, cb) {
+    const handlers = this[`${type}Handlers`];
+    handlers[id] = cb;
+  }
+  runOnce (type, id) {
+    const handlers = this[`${type}Handlers`];
+    if (handlers[id]) {
+      handlers[id]();
+      delete handlers[id];
+    }
+  }
+  success (id) {
+    this.runOnce('success', id);
+    this.runOnce('complete', id);
+  }
+  failure (id) {
+    this.runOnce('failure', id);
+    this.runOnce('complete', id);
+  }
+};

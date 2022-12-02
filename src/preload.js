@@ -2,14 +2,19 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 const { invoke } = ipcRenderer;
+let intentID = 1;
 
-contextBridge.exposeInMainWorld('envoyage',{
+contextBridge.exposeInMainWorld('envoyager',{
   // identities
   loadIdentities: () => invoke('identities:load'),
   createIdentity: (data) => invoke('identities:create', data),
   // saveIdentity: (person) => invoke('identities:save', person),
   // deleteIdentity: (did) => invoke('identities:delete', did),
   // intents
-  intent: (action, type, data) => invoke('intent:show-matching-intents', action, type, data),
+  intent: (action, type, data) => {
+    const id = intentID++;
+    invoke('intent:show-matching-intents', action, type, data, id);
+    return id;
+  },
   onIntentList: (cb) => ipcRenderer.on('intent-list', cb),
 });
