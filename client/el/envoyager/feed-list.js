@@ -35,16 +35,23 @@ class EnvoyagerFeedList extends LitElement {
   }
 
   willUpdate (props) {
-    if (props.has('src')) {
-      this.loading = true;
-      fetch(this.src, { headers: { Accept: 'application/json' }})
-        .then((r) => r.json())
-        .then((feed) => {
-          this.loading = false;
-          this.data = feed;
-        })
-      ;
-    }
+    if (props.has('src')) this.refresh();
+  }
+
+  refresh () {
+    this.loading = true;
+    fetch(this.src, { headers: { Accept: 'application/json' }})
+      .then((r) => r.json())
+      .then((feed) => {
+        this.loading = false;
+        this.data = feed;
+      })
+    ;
+  }
+
+  intendToAddFeed () {
+    const intent = window.envoyager.intent('create', 'envoyager/feed', { parent: this.src, position: 'prepend' });
+    intent.addListener('success', () => this.refresh());
   }
 
   render () {
@@ -67,7 +74,7 @@ class EnvoyagerFeedList extends LitElement {
       }
       ${
         this.addable
-        ? html`<div id="actions"><button><span class="icon">+</span>Add Feed</button></div>`
+        ? html`<div id="actions"><button @click=${this.intendToAddFeed}><span class="icon">+</span>Add Feed</button></div>`
         : nothing
       }
     </div>`;

@@ -10,7 +10,7 @@ import loadJSON from './load-json.js';
 import { putBlockAndPin, putDagAndPin, dirCryptoKey, publishIPNS } from './ipfs-node.js';
 
 const { handle } = ipcMain;
-const dataDir = join(homedir(), '.envoyager');
+export const dataDir = join(homedir(), '.envoyager');
 const identitiesDir = join(dataDir, 'identities');
 const didRx = /^did:[\w-]+:\S+/;
 const ipnsFile = 'ipns.json';
