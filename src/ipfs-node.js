@@ -9,13 +9,13 @@ import { base32 } from "multiformats/bases/base32";
 import { CID } from 'multiformats';
 import loadJSON from './load-json.js';
 import saveJSON from './save-json.js';
-import { dataDir } from './data-source.js';
+import { dataDir } from './profile-data.js';
 
 // 🚨🚨🚨 WARNING 🚨🚨🚨
 // nothing here is meant to be safe, this is all demo code, the keys are just stored on disk, etc.
 const password = 'Steps to an Ecology of Mind';
 const cachePath = join(dataDir, 'ipns-cache.json');
-let ipnsCache = {};
+let ipnsCache;
 
 export const node = await createNode();
 

@@ -34,6 +34,7 @@ export async function ipfsProtocolHandler (req, cb) {
       }, null, 2)),
     });
   }
+  console.warn(`url to cid`, req.url, cid);
   if (req.method !== 'GET') return cb({
     statusCode: 405, // Method Not Allowed
     mimeType: 'application/json',

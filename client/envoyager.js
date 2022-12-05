@@ -22,5 +22,6 @@ import './el/envoyager/loading.js';
 import './el/envoyager/feed-list.js';
 import './el/envoyager/intent-list-modal.js';
 import './el/envoyager/intent-action.js';
+import './el/envoyager/item-card.js';
 
 await initIdentities();

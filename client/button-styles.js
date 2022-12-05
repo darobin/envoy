@@ -43,4 +43,17 @@ button span.icon {
   font-variation-settings: "wght" 400;
   color: var(--highlight);
 }
+button.small {
+  min-width: 0;
+  height: auto;
+  line-height: initial;
+  margin-left: 0.5rem;
+}
+button.discreet {
+  background: transparent;
+  opacity: 0.5;
+}
+button.discreet:hover {
+  opacity: 1;
+}
 `;

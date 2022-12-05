@@ -5,6 +5,8 @@
   --heading-font: Lexend;
   --highlight: lightgreen;
   --error: #ff4500;
+  --lightest: rgb(239, 243, 244);
+  --lightest-bg: rgb(0, 0, 0, 0.03);
 }
 
 html, body {

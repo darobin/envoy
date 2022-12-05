@@ -19,6 +19,7 @@ class EnvoyagerShowIdentity extends LitElement {
       height: 200px;
       background-color: var(--highlight);
       background-size: cover;
+      background-position: center;
     }
     #avatar {
       height: 142px;
@@ -27,6 +28,7 @@ class EnvoyagerShowIdentity extends LitElement {
       border-radius: 50%;
       background-color: #000;
       background-size: cover;
+      background-position: center;
       border: 3px solid #fff;
     }
     pre {

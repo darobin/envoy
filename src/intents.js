@@ -1,10 +1,10 @@
 
-import { join, resolve } from 'path';
+import { join } from 'path';
 import { mkdir, readdir } from "fs/promises";
 import { ipcMain } from 'electron';
 import { nanoid } from 'nanoid';
 import { getDag, putDagAndPin, publishIPNS, resolveIPNS } from './ipfs-node.js';
-import { dataDir, did2keyDir } from './data-source.js';
+import { dataDir, did2keyDir } from './profile-data.js';
 import loadJSON from './load-json.js';
 
 const { handle } = ipcMain;

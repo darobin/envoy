@@ -4,9 +4,9 @@ import { buttonStyles } from '../../button-styles.js';
 
 class EnvoyagerFeedList extends LitElement {
   static properties = {
+    src: {},
     data: { attribute: false },
     user: { attribute: false },
-    src: {},
     addable: { type: Boolean },
     creator: { type: Boolean },
     loading: { attribute: false },
@@ -23,6 +23,12 @@ class EnvoyagerFeedList extends LitElement {
     }
     #actions {
       text-align: right;
+    }
+    nv-item-card {
+      border-bottom: 1px solid var(--lightest);
+    }
+    nv-item-card:last-of-type {
+      border-bottom: none;
     }
   `, buttonStyles];
 
@@ -58,7 +64,6 @@ class EnvoyagerFeedList extends LitElement {
   }
 
   render () {
-    console.warn(this.user, this.data);
     if (this.loading) return html`<div><nv-loading></nv-loading></div>`;
     return html`<div>
       ${

@@ -1,5 +1,4 @@
 
-import { homedir } from 'os';
 import { join } from 'path';
 import { mkdir, access, writeFile, readdir } from "fs/promises";
 import { Buffer } from 'buffer';
@@ -8,10 +7,9 @@ import mime from 'mime-types';
 import saveJSON from './save-json.js';
 import loadJSON from './load-json.js';
 import { putBlockAndPin, putDagAndPin, dirCryptoKey, publishIPNS } from './ipfs-node.js';
+import { identitiesDir } from './profile-data.js';
 
 const { handle } = ipcMain;
-export const dataDir = join(homedir(), '.envoyager');
-const identitiesDir = join(dataDir, 'identities');
 const didRx = /^did:[\w-]+:\S+/;
 const ipnsFile = 'ipns.json';
 
@@ -88,10 +86,6 @@ async function createIdentity (evt, { name, did, avatar, banner } = {}) {
   catch (err) {
     return err.message;
   }
-}
-
-export function did2keyDir (did) {
-  return join(identitiesDir, encodeURIComponent(did), 'keys');
 }
 
 // async function saveIdentity (evt, person) {
