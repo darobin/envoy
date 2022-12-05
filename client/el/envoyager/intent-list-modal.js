@@ -95,14 +95,17 @@ class EnvoyagerIntentListModal extends LitElement {
   }
 
   onComplete () {
+    console.warn(`Running onComplete(${this.intentID})`);
     window.intentListener.success(this.intentID);
+    this.resetState();
   }
   onCancel () {
+    console.warn(`called onCancel`, this.intentID);
     window.intentListener.failure(this.intentID);
+    this.resetState();
   }
   close () {
     this.onCancel();
-    this.resetState();
   }
 
   render () {
@@ -125,8 +128,8 @@ class EnvoyagerIntentListModal extends LitElement {
         action=${this.action}
         type=${this.type}
         .data=${this.data}
-        .onComplete=${this.onComplete}
-        .onCancel=${this.onCancel}
+        .onComplete=${() => this.onComplete()}
+        .onCancel=${() => this.onCancel()}
         ></nv-intent-action>
     </nv-box>`;
   }
@@ -145,8 +148,10 @@ window.intentListener = new class IntentListener {
     handlers[id] = cb;
   }
   runOnce (type, id) {
+    console.warn(`Running once for ${type}:${id}`);
     const handlers = this[`${type}Handlers`];
     if (handlers[id]) {
+      console.warn(`Have handler, will run`);
       handlers[id]();
       delete handlers[id];
     }
@@ -156,6 +161,7 @@ window.intentListener = new class IntentListener {
     this.runOnce('complete', id);
   }
   failure (id) {
+    console.warn(`failure…`, id);
     this.runOnce('failure', id);
     this.runOnce('complete', id);
   }

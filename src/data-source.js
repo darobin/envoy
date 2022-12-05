@@ -71,22 +71,27 @@ async function createIdentity (evt, { name, did, avatar, banner } = {}) {
     // create the person, get their IPNS, set that on feed, update feed, republish its IPNS.
     const feed = {
       $type: 'Feed',
+      $id: `${did}.root-feed`,
       items: [],
     };
     const tmpFeedCID = await putDagAndPin(feed);
-    const feedIPNS = await publishIPNS(keyDir, `${did}.root-feed`, tmpFeedCID);
+    const feedIPNS = await publishIPNS(keyDir, feed.$id, tmpFeedCID);
     person.feed = `ipns://${feedIPNS}`;
     const personCID = await putDagAndPin(person);
     const personIPNS = await publishIPNS(keyDir, did, personCID);
     feed.creator = `ipns://${personIPNS}`;
     const feedCID = await putDagAndPin(feed);
-    await publishIPNS(keyDir, `${did}.root-feed`, feedCID);
+    await publishIPNS(keyDir, feed.$id, feedCID);
     await saveJSON(join(didDir, ipnsFile), { ipns: personIPNS });
     return '';
   }
   catch (err) {
     return err.message;
   }
+}
+
+export function did2keyDir (did) {
+  return join(identitiesDir, encodeURIComponent(did), 'keys');
 }
 
 // async function saveIdentity (evt, person) {

@@ -1,7 +1,7 @@
 
 import { app, protocol, BrowserWindow, screen }  from 'electron';
 import { ipfsProtocolHandler } from './ipfs-handler.js';
-import { shutdown } from './ipfs-node.js';
+import { initIPNSCache, shutdown } from './ipfs-node.js';
 import { initDataSource } from './data-source.js';
 import { initIntents } from './intents.js';
 import makeRel from './rel.js';
@@ -26,6 +26,7 @@ else {
 app.whenReady().then(async () => {
   protocol.registerStreamProtocol('ipfs', ipfsProtocolHandler);
   protocol.registerStreamProtocol('ipns', ipfsProtocolHandler);
+  await initIPNSCache();
   await initDataSource();
   await initIntents();
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;

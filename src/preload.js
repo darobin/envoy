@@ -18,4 +18,5 @@ contextBridge.exposeInMainWorld('envoyager',{
     invoke('intent:show-matching-intents', action, type, data, id);
     return id;
   },
+  createFeed: (data) => invoke('intent:create-feed', data),
 });

@@ -5,6 +5,7 @@ import { buttonStyles } from '../../button-styles.js';
 class EnvoyagerFeedList extends LitElement {
   static properties = {
     data: { attribute: false },
+    user: { attribute: false },
     src: {},
     addable: { type: Boolean },
     creator: { type: Boolean },
@@ -29,6 +30,7 @@ class EnvoyagerFeedList extends LitElement {
     super();
     this.src = null;
     this.data = {};
+    this.user = null;
     this.addable = false;
     this.creator = false;
     this.loading = false;
@@ -39,6 +41,7 @@ class EnvoyagerFeedList extends LitElement {
   }
 
   refresh () {
+    console.warn(`Refreshing…`);
     this.loading = true;
     fetch(this.src, { headers: { Accept: 'application/json' }})
       .then((r) => r.json())
@@ -50,11 +53,12 @@ class EnvoyagerFeedList extends LitElement {
   }
 
   async intendToAddFeed () {
-    const intentID = await window.envoyager.intent('create', 'envoyager/feed', { parent: this.src, position: 'prepend' });
+    const intentID = await window.envoyager.intent('create', 'envoyager/feed', { parent: this.src, position: 'prepend', creator: this.user });
     window.intentListener.once('success', intentID, () => this.refresh());
   }
 
   render () {
+    console.warn(this.user, this.data);
     if (this.loading) return html`<div><nv-loading></nv-loading></div>`;
     return html`<div>
       ${

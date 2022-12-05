@@ -64,13 +64,14 @@ class EnvoyagerShowIdentity extends LitElement {
   }
 
   render () {
+    console.warn(`person`, this.person);
     const url = this.person?.url || '';
     return html`<div>
       <div id="banner" style=${url && this.person?.banner?.src ? `background-image: url(${url}/banner/src)` : ''}></div>
       <div id="avatar" style=${url && this.person?.avatar?.src ? `background-image: url(${url}/avatar/src)` : ''}></div>
       <h2 id="name">${this.person?.name || 'Nameless Internet Entity'}</h2>
       <pre>${this.person?.$id}</pre>
-      <nv-feed-list src=${this.person?.feed} addable></nv-feed-list>
+      <nv-feed-list src=${this.person?.feed} .user=${this.person} addable></nv-feed-list>
     </div>`;
   }
 }

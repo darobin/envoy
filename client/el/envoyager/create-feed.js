@@ -8,6 +8,10 @@ class EnvoyagerCreateFeed extends LitElement {
     :host {
       display: block;
     }
+    .form-line {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
   `, formStyles, buttonStyles];
 
   constructor () {
@@ -22,30 +26,16 @@ class EnvoyagerCreateFeed extends LitElement {
       data[key] = value;
     }
     console.warn(data);
-    this.errMsg = await window.envoyager.createIdentity(data);
+    this.errMsg = data.name ? null : 'Name is required.';
 
     if (this.errMsg) this.requestUpdate();
     else {
-      // XXX
-      // handle success
-      // send a message to the backend with the data needed to create a feed, set its creator, add it to the right parent
-      // event up
-      //
-      // CURRENT STATUS
-      //  - style for creation form is off
-      //  - need to figure out how to dispatch events up from a webview
-      //  - need to add a createFeed() to the preload (for webviews) that does the right things and fakes WICAN security
-      //  - event back completion so the feed can reload
+      window.envoyager.signalCreateFeed(data);
     }
   }
 
   cancel () {
-    const cev = new CustomEvent('intent-cancelled', {
-      bubbles: true,
-      composed: true,
-      detail: {},
-    });
-    window.dispatchEvent(cev);
+    window.envoyager.signalIntentCancelled();
   }
 
   render () {

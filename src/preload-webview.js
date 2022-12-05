@@ -1,6 +1,6 @@
 
 const { contextBridge, ipcRenderer } = require('electron');
-const { invoke } = ipcRenderer;
+const { invoke, sendToHost } = ipcRenderer;
 
 // XXX note that this will cause some weird issues, we're not set up to manage this well
 // from inside items yet
@@ -13,5 +13,11 @@ contextBridge.exposeInMainWorld('envoyager',{
     const id = 'x' + intentID++;
     invoke('intent:show-matching-intents', action, type, data, id);
     return id;
+  },
+  signalIntentCancelled: () => {
+    sendToHost('intent-cancelled');
+  },
+  signalCreateFeed: (data) => {
+    sendToHost('create-feed', data);
   },
 });

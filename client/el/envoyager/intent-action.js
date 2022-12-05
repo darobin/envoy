@@ -36,6 +36,24 @@ class EnvoyagerIntentAction extends LitElement {
     ev.target.previousElementSibling.openDevTools();
   }
 
+  async dispatchIPC ({ channel, args }) {
+    console.warn(`dispatching`, channel);
+    if (channel === 'intent-cancelled') return this.onCancel();
+    // this does not belong here, but due to unpleasant architecture in coordinating webviews, all intent work is here.
+    if (channel === 'create-feed') {
+      const [data] = args;
+      await window.envoyager.createFeed({
+        name: data.name,
+        creator: this.data.creator,
+        parent: this.data.parent,
+        position: this.data.position,
+      });
+      this.onComplete();
+      console.warn(`Done creating feed, send onComplete.`);
+    }
+
+  }
+
   // webview attributes
   //  src (use loadSrc)
   //  preload - need one for intents injection ./src/preload-webview.js
@@ -46,7 +64,7 @@ class EnvoyagerIntentAction extends LitElement {
     let src = this.src;
     if (/^native:/.test(src)) src = src.replace(/^native:/, './client/intents/') + '.html';
     return html`<div>
-      <webview src=${src} partition=${this.src} preload="./src/preload-webview.js" @intent-cancelled=${this.onCancel}></webview>
+      <webview src=${src} partition=${this.src} preload="./src/preload-webview.js" @ipc-message=${this.dispatchIPC}></webview>
       <button @click=${this.debug}>debug</button>
     </div>`;
   }

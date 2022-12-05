@@ -23,6 +23,11 @@ button {
   background: #000;
   color: #fff;
 }
+button[type="reset"] {
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+}
 button:hover, button:focus {
   color: var(--highlight);
 }

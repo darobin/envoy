@@ -13,6 +13,10 @@ export const formStyles = css`
   padding: 1px;
   margin-top: 2rem;
 }
+label {
+  font-family: var(--heading-font);
+  font-variation-settings: "wght" 400;
+}
 input {
   border: none;
   border-bottom: 1px solid #ccc;

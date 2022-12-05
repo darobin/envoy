@@ -1,8 +1,10 @@
 
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { mkdir, readdir } from "fs/promises";
 import { ipcMain } from 'electron';
-import { dataDir } from './data-source.js';
+import { nanoid } from 'nanoid';
+import { getDag, putDagAndPin, publishIPNS, resolveIPNS } from './ipfs-node.js';
+import { dataDir, did2keyDir } from './data-source.js';
 import loadJSON from './load-json.js';
 
 const { handle } = ipcMain;
@@ -16,6 +18,7 @@ export async function initIntents () {
   }
   catch (err) {/**/}
   handle('intent:show-matching-intents', showMatchingIntents);
+  handle('intent:create-feed', createFeed);
 }
 
 async function loadIntents () {
@@ -111,4 +114,41 @@ async function showMatchingIntents (ev, action, type, data, id) {
   }
   console.warn(`found intents`, intents);
   return done();
+}
+
+async function createFeed (ev, data) {
+  const creatorDID = data.creator?.$id;
+  if (!creatorDID) throw new Error(`Cannot create a feed that does not have a creator with an $id.`);
+  const keyDir = did2keyDir(creatorDID);
+  const feed = {
+    $type: 'Feed',
+    $id: `envoyager:feed.${nanoid()}`,
+    name: data.name,
+    creator: data.creator?.url,
+    items: [],
+  };
+  console.warn(`creating feed`, feed);
+  const tempCID = await putDagAndPin(feed);
+  const ipns = await publishIPNS(keyDir, feed.$id, tempCID);
+  feed.url = `ipns://${ipns}/`;
+  console.warn(`published to ${feed.url}`);
+  const cid = await putDagAndPin(feed);
+  await publishIPNS(keyDir, feed.$id, cid);
+  console.warn(`republished`);
+  if (data.parent) {
+    console.warn(`PARENT`);
+    let cid;
+    if (/^ipns:/.test(data.parent)) cid = await resolveIPNS(data.parent.replace(/^ipns:\/\//, '').replace(/\/.*/, ''));
+    else if (/^ipfs:/.test(data.parent)) cid = data.parent.replace(/^ipfs:\/\//, '').replace(/\/.*/, '');
+    console.warn(`parent cid=${cid}`);
+    const parentFeed = await getDag(cid);
+    if (!parentFeed.items) parentFeed.items = [];
+    if (data.position === 'prepend') parentFeed.items.unshift(feed.url);
+    else parentFeed.items.push(feed.url);
+    console.warn(`parent updated feed`, parentFeed);
+    const newCID = await putDagAndPin(parentFeed);
+    if (/^ipns:/.test(data.parent)) await publishIPNS(keyDir, parentFeed.$id || `${creatorDID}.root-feed`, newCID);
+    console.warn(`parent republished`);
+    return newCID;
+  }
 }
